@@ -9,168 +9,148 @@ from tkinter import messagebox, ttk
 class WinHealApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("WinHeal AI 2027 - Advanced System Optimizer")
-        self.root.geometry("520x820")
-        self.root.config(bg="#0f172a")  # Dark Futuristic Theme
+        self.root.title("WinHeal AI 2027 - Professional Edition")
+        self.root.geometry("540x840")
+        self.root.config(bg="#090d16")  # Deep Cyberpunk Dark Background
 
-        # Title Header
+        # Custom Styles for ttk Progressbar
+        style = ttk.Style()
+        style.theme_use('clam')
+        style.configure("custom.Horizontal.TProgressbar", 
+                        troughcolor="#1e293b", 
+                        background="#06b6d4", 
+                        darkcolor="#06b6d4", 
+                        lightcolor="#38bdf8", 
+                        bordercolor="#090d16")
+
+        # Title Header Frame
+        header_frame = tk.Frame(root, bg="#090d16")
+        header_frame.pack(pady=12)
+
         title_label = tk.Label(
-            root, 
-            text="⚡ WinHeal AI 2027 Dashboard", 
-            font=("Segoe UI", 16, "bold"), 
-            bg="#0f172a", 
+            header_frame, 
+            text="⚡ WINHEAL AI 2027", 
+            font=("Segoe UI", 18, "bold"), 
+            bg="#090d16", 
             fg="#38bdf8"
         )
-        title_label.pack(pady=8)
+        title_label.pack()
 
-        # Real-time Metrics Frame
+        subtitle_label = tk.Label(
+            header_frame, 
+            text="Next-Gen Autonomous System Optimizer & Self-Healing Suite", 
+            font=("Segoe UI", 9), 
+            bg="#090d16", 
+            fg="#64748b"
+        )
+        subtitle_label.pack()
+
+        # Real-time Metrics Card Frame
         metrics_frame = tk.LabelFrame(
             root, 
-            text=" Live Performance Monitoring ", 
+            text=" System Telemetry & Performance ", 
             font=("Segoe UI", 9, "bold"),
             bg="#0f172a", 
-            fg="#94a3b8",
+            fg="#cbd5e1",
+            bd=1,
+            relief="solid",
             padx=15, 
-            pady=6
+            pady=10
         )
-        metrics_frame.pack(fill="x", padx=20, pady=4)
+        metrics_frame.pack(fill="x", padx=20, pady=5)
 
         # CPU Usage Bar
-        tk.Label(metrics_frame, text="CPU Usage:", font=("Segoe UI", 9), bg="#0f172a", fg="#f8fafc").grid(row=0, column=0, sticky="w")
-        self.cpu_bar = ttk.Progressbar(metrics_frame, length=310, mode="determinate")
-        self.cpu_bar.grid(row=0, column=1, padx=10, pady=3)
-        self.cpu_lbl = tk.Label(metrics_frame, text="0%", font=("Segoe UI", 9, "bold"), bg="#0f172a", fg="#38bdf8")
+        tk.Label(metrics_frame, text="CPU Usage:", font=("Segoe UI", 9, "bold"), bg="#0f172a", fg="#f8fafc").grid(row=0, column=0, sticky="w", pady=4)
+        self.cpu_bar = ttk.Progressbar(metrics_frame, length=280, mode="determinate", style="custom.Horizontal.TProgressbar")
+        self.cpu_bar.grid(row=0, column=1, padx=10, pady=4)
+        self.cpu_lbl = tk.Label(metrics_frame, text="0%", font=("Segoe UI", 9, "bold"), bg="#0f172a", fg="#38bdf8", width=5)
         self.cpu_lbl.grid(row=0, column=2)
 
         # RAM Usage Bar
-        tk.Label(metrics_frame, text="RAM Usage:", font=("Segoe UI", 9), bg="#0f172a", fg="#f8fafc").grid(row=1, column=0, sticky="w")
-        self.ram_bar = ttk.Progressbar(metrics_frame, length=310, mode="determinate")
-        self.ram_bar.grid(row=1, column=1, padx=10, pady=3)
-        self.ram_lbl = tk.Label(metrics_frame, text="0%", font=("Segoe UI", 9, "bold"), bg="#0f172a", fg="#38bdf8")
+        tk.Label(metrics_frame, text="RAM Usage:", font=("Segoe UI", 9, "bold"), bg="#0f172a", fg="#f8fafc").grid(row=1, column=0, sticky="w", pady=4)
+        self.ram_bar = ttk.Progressbar(metrics_frame, length=280, mode="determinate", style="custom.Horizontal.TProgressbar")
+        self.ram_bar.grid(row=1, column=1, padx=10, pady=4)
+        self.ram_lbl = tk.Label(metrics_frame, text="0%", font=("Segoe UI", 9, "bold"), bg="#0f172a", fg="#38bdf8", width=5)
         self.ram_lbl.grid(row=1, column=2)
 
         # AI Recommendation Banner
         self.ai_status_lbl = tk.Label(
             root, 
-            text="🤖 AI Engine Status: Ready for Advanced Optimization...", 
+            text="🤖 AI Core: Standby & Ready for Deep Diagnostic Scan...", 
             font=("Segoe UI", 9, "italic"), 
             bg="#1e293b", 
             fg="#facc15",
-            pady=5
+            padx=10,
+            pady=8
         )
-        self.ai_status_lbl.pack(fill="x", padx=20, pady=6)
+        self.ai_status_lbl.pack(fill="x", padx=20, pady=8)
 
-        # Output Terminal Text Area
+        # Output Terminal Text Area (Glassmorphism effect simulation)
+        terminal_frame = tk.Frame(root, bg="#020617", bd=1, relief="solid")
+        terminal_frame.pack(padx=20, pady=5)
+        
         self.text_area = tk.Text(
-            root, 
-            height=9, 
+            terminal_frame, 
+            height=10, 
             width=58, 
             font=("Consolas", 9), 
             bg="#020617", 
-            fg="#22c55e",
+            fg="#4ade80",
+            bd=0,
+            highlightthickness=0,
             insertbackground="white"
         )
-        self.text_area.pack(pady=3)
+        self.text_area.pack(padx=8, pady=8)
 
-        # Action Buttons Frame 1
-        btn_frame1 = tk.Frame(root, bg="#0f172a")
-        btn_frame1.pack(pady=2)
+        # Action Buttons Container (Grid Layout with Professional Flat Design)
+        btn_container = tk.Frame(root, bg="#090d16")
+        btn_container.pack(pady=10)
 
+        # Row 1: AI Scan & Auto-Fix
         btn_health = tk.Button(
-            btn_frame1, 
-            text="🔍 Full AI Scan", 
-            command=self.run_ai_health_check, 
-            bg="#0284c7", 
-            fg="white", 
-            font=("Segoe UI", 9, "bold"), 
-            width=15, 
-            relief="flat"
+            btn_container, text="🔍 Full AI Scan", command=self.run_ai_health_check, 
+            bg="#0284c7", fg="white", font=("Segoe UI", 9, "bold"), width=18, pady=6, relief="flat", cursor="hand2"
         )
-        btn_health.grid(row=0, column=0, padx=5, pady=2)
+        btn_health.grid(row=0, column=0, padx=6, pady=4)
 
         btn_autofix = tk.Button(
-            btn_frame1, 
-            text="⚡ One-Click Fix", 
-            command=self.run_one_click_fix, 
-            bg="#ea580c", 
-            fg="white", 
-            font=("Segoe UI", 9, "bold"), 
-            width=15, 
-            relief="flat"
+            btn_container, text="⚡ One-Click Fix", command=self.run_one_click_fix, 
+            bg="#d97706", fg="white", font=("Segoe UI", 9, "bold"), width=18, pady=6, relief="flat", cursor="hand2"
         )
-        btn_autofix.grid(row=0, column=1, padx=5, pady=2)
+        btn_autofix.grid(row=0, column=1, padx=6, pady=4)
 
-        # Action Buttons Frame 2
-        btn_frame2 = tk.Frame(root, bg="#0f172a")
-        btn_frame2.pack(pady=2)
-
+        # Row 2: Clean Temp & Recycle Bin
         btn_temp = tk.Button(
-            btn_frame2, 
-            text="🧹 Clean Junk", 
-            command=self.run_clean_temp, 
-            bg="#16a34a", 
-            fg="white", 
-            font=("Segoe UI", 9, "bold"), 
-            width=15, 
-            relief="flat"
+            btn_container, text="🧹 Clean Junk", command=self.run_clean_temp, 
+            bg="#16a34a", fg="white", font=("Segoe UI", 9, "bold"), width=18, pady=6, relief="flat", cursor="hand2"
         )
-        btn_temp.grid(row=0, column=0, padx=5, pady=2)
+        btn_temp.grid(row=1, column=0, padx=6, pady=4)
 
         btn_bin = tk.Button(
-            btn_frame2, 
-            text="🗑️ Empty Bin", 
-            command=self.run_empty_bin, 
-            bg="#dc2626", 
-            fg="white", 
-            font=("Segoe UI", 9, "bold"), 
-            width=15, 
-            relief="flat"
+            btn_container, text="🗑️ Empty Bin", command=self.run_empty_bin, 
+            bg="#dc2626", fg="white", font=("Segoe UI", 9, "bold"), width=18, pady=6, relief="flat", cursor="hand2"
         )
-        btn_bin.grid(row=0, column=1, padx=5, pady=2)
+        btn_bin.grid(row=1, column=1, padx=6, pady=4)
 
-        # Action Buttons Frame 3
-        btn_frame3 = tk.Frame(root, bg="#0f172a")
-        btn_frame3.pack(pady=2)
-
+        # Row 3: Startup Apps & Storage Explorer
         btn_startup = tk.Button(
-            btn_frame3, 
-            text="🚀 Startup Apps", 
-            command=self.run_startup_manager, 
-            bg="#9333ea", 
-            fg="white", 
-            font=("Segoe UI", 9, "bold"), 
-            width=15, 
-            relief="flat"
+            btn_container, text="🚀 Startup Apps", command=self.run_startup_manager, 
+            bg="#7c3aed", fg="white", font=("Segoe UI", 9, "bold"), width=18, pady=6, relief="flat", cursor="hand2"
         )
-        btn_startup.grid(row=0, column=0, padx=5, pady=2)
+        btn_startup.grid(row=2, column=0, padx=6, pady=4)
 
         btn_storage = tk.Button(
-            btn_frame3, 
-            text="📁 Storage Explorer", 
-            command=self.run_storage_explorer, 
-            bg="#0d9488", 
-            fg="white", 
-            font=("Segoe UI", 9, "bold"), 
-            width=15, 
-            relief="flat"
+            btn_container, text="📁 Storage Explorer", command=self.run_storage_explorer, 
+            bg="#0d9488", fg="white", font=("Segoe UI", 9, "bold"), width=18, pady=6, relief="flat", cursor="hand2"
         )
-        btn_storage.grid(row=0, column=1, padx=5, pady=2)
+        btn_storage.grid(row=2, column=1, padx=6, pady=4)
 
-        # Action Buttons Frame 4 (New Network Optimizer Feature)
-        btn_frame4 = tk.Frame(root, bg="#0f172a")
-        btn_frame4.pack(pady=2)
-
+        # Row 4: Network Optimizer (Full Width)
         btn_network = tk.Button(
-            btn_frame4, 
-            text="🌐 Network & DNS Boost", 
-            command=self.run_network_optimizer, 
-            bg="#2563eb", 
-            fg="white", 
-            font=("Segoe UI", 9, "bold"), 
-            width=32, 
-            relief="flat"
+            btn_container, text="🌐 Network & DNS Optimizer", command=self.run_network_optimizer, 
+            bg="#2563eb", fg="white", font=("Segoe UI", 9, "bold"), width=39, pady=7, relief="flat", cursor="hand2"
         )
-        btn_network.grid(row=0, column=0, padx=5, pady=2)
+        btn_network.grid(row=3, column=0, columnspan=2, padx=6, pady=6)
 
         # Start live metrics auto-update
         self.update_live_metrics()
@@ -215,10 +195,10 @@ class WinHealApp:
             self.log_message("❌ [Issue Detected]: Heavy CPU load!")
 
         if issues_found == 0:
-            ai_advice = "✅ All systems optimal. Click 'One-Click Fix' anytime for routine tune-up."
-            self.ai_status_lbl.config(text=f"🤖 AI Status: {ai_advice}", fg="#22c55e")
+            ai_advice = "✅ All systems optimal. Click 'One-Click Fix' anytime."
+            self.ai_status_lbl.config(text=f"🤖 AI Status: {ai_advice}", fg="#4ade80")
         else:
-            ai_advice = f"⚠️ {issues_found} issue(s) found! Click '⚡ One-Click Fix' to resolve automatically."
+            ai_advice = f"⚠️ {issues_found} issue(s) found! Click '⚡ One-Click Fix' to resolve."
             self.ai_status_lbl.config(text=f"🤖 AI Status: {ai_advice}", fg="#f87171")
 
         self.log_message(f"\n[AI SUMMARY]: {ai_advice}\n")
@@ -245,7 +225,7 @@ class WinHealApp:
         except Exception:
             self.log_message("ℹ️ Recycle Bin: Already clean.")
 
-        self.ai_status_lbl.config(text="🤖 AI Status: ✅ System fully optimized and healed!", fg="#22c55e")
+        self.ai_status_lbl.config(text="🤖 AI Status: ✅ System fully optimized and healed!", fg="#4ade80")
         self.log_message("\n🎉 SUCCESS: All automated maintenance tasks completed!\n")
         messagebox.showinfo("WinHeal AI 2027", "Automated Self-Healing completed successfully!")
 
@@ -298,9 +278,7 @@ class WinHealApp:
         self.text_area.delete("1.0", tk.END)
         self.log_message("=== 🌐 NETWORK & DNS OPTIMIZER ===")
         self.log_message("Flushing DNS resolver cache to speed up internet...\n")
-        
         try:
-            # Run ipconfig /flushdns command
             result = subprocess.run(["ipconfig", "/flushdns"], capture_output=True, text=True, shell=True)
             if result.returncode == 0:
                 self.log_message("✅ DNS Cache successfully flushed!")
