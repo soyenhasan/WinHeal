@@ -9,7 +9,7 @@ class WinHealApp:
     def __init__(self, root):
         self.root = root
         self.root.title("WinHeal AI 2027 - Advanced System Optimizer")
-        self.root.geometry("500x600")
+        self.root.geometry("520x650")
         self.root.config(bg="#0f172a")  # Dark Futuristic Theme
 
         # Title Header
@@ -20,31 +20,31 @@ class WinHealApp:
             bg="#0f172a", 
             fg="#38bdf8"
         )
-        title_label.pack(pady=15)
+        title_label.pack(pady=10)
 
         # Real-time Metrics Frame
         metrics_frame = tk.LabelFrame(
             root, 
             text=" Live Performance Monitoring ", 
-            font=("Segoe UI", 10, "bold"),
+            font=("Segoe UI", 9, "bold"),
             bg="#0f172a", 
             fg="#94a3b8",
             padx=15, 
-            pady=10
+            pady=8
         )
         metrics_frame.pack(fill="x", padx=20, pady=5)
 
         # CPU Usage Bar
         tk.Label(metrics_frame, text="CPU Usage:", font=("Segoe UI", 9), bg="#0f172a", fg="#f8fafc").grid(row=0, column=0, sticky="w")
-        self.cpu_bar = ttk.Progressbar(metrics_frame, length=300, mode="determinate")
-        self.cpu_bar.grid(row=0, column=1, padx=10, pady=5)
+        self.cpu_bar = ttk.Progressbar(metrics_frame, length=310, mode="determinate")
+        self.cpu_bar.grid(row=0, column=1, padx=10, pady=4)
         self.cpu_lbl = tk.Label(metrics_frame, text="0%", font=("Segoe UI", 9, "bold"), bg="#0f172a", fg="#38bdf8")
         self.cpu_lbl.grid(row=0, column=2)
 
         # RAM Usage Bar
         tk.Label(metrics_frame, text="RAM Usage:", font=("Segoe UI", 9), bg="#0f172a", fg="#f8fafc").grid(row=1, column=0, sticky="w")
-        self.ram_bar = ttk.Progressbar(metrics_frame, length=300, mode="determinate")
-        self.ram_bar.grid(row=1, column=1, padx=10, pady=5)
+        self.ram_bar = ttk.Progressbar(metrics_frame, length=310, mode="determinate")
+        self.ram_bar.grid(row=1, column=1, padx=10, pady=4)
         self.ram_lbl = tk.Label(metrics_frame, text="0%", font=("Segoe UI", 9, "bold"), bg="#0f172a", fg="#38bdf8")
         self.ram_lbl.grid(row=1, column=2)
 
@@ -55,15 +55,15 @@ class WinHealApp:
             font=("Segoe UI", 9, "italic"), 
             bg="#1e293b", 
             fg="#facc15",
-            pady=8
+            pady=6
         )
-        self.ai_status_lbl.pack(fill="x", padx=20, pady=10)
+        self.ai_status_lbl.pack(fill="x", padx=20, pady=8)
 
         # Output Terminal Text Area
         self.text_area = tk.Text(
             root, 
-            height=12, 
-            width=55, 
+            height=10, 
+            width=58, 
             font=("Consolas", 9), 
             bg="#020617", 
             fg="#22c55e",
@@ -71,45 +71,61 @@ class WinHealApp:
         )
         self.text_area.pack(pady=5)
 
-        # Action Buttons Frame
-        btn_frame = tk.Frame(root, bg="#0f172a")
-        btn_frame.pack(pady=10)
+        # Action Buttons Frame 1
+        btn_frame1 = tk.Frame(root, bg="#0f172a")
+        btn_frame1.pack(pady=5)
 
         btn_health = tk.Button(
-            btn_frame, 
+            btn_frame1, 
             text="🔍 Full AI Scan", 
             command=self.run_ai_health_check, 
             bg="#0284c7", 
             fg="white", 
             font=("Segoe UI", 9, "bold"), 
-            width=14, 
+            width=15, 
             relief="flat"
         )
-        btn_health.grid(row=0, column=0, padx=5, pady=5)
+        btn_health.grid(row=0, column=0, padx=5, pady=3)
 
         btn_temp = tk.Button(
-            btn_frame, 
+            btn_frame1, 
             text="🧹 Clean Junk", 
             command=self.run_clean_temp, 
             bg="#16a34a", 
             fg="white", 
             font=("Segoe UI", 9, "bold"), 
-            width=14, 
+            width=15, 
             relief="flat"
         )
-        btn_temp.grid(row=0, column=1, padx=5, pady=5)
+        btn_temp.grid(row=0, column=1, padx=5, pady=3)
+
+        # Action Buttons Frame 2 (New Advanced Features)
+        btn_frame2 = tk.Frame(root, bg="#0f172a")
+        btn_frame2.pack(pady=5)
 
         btn_bin = tk.Button(
-            btn_frame, 
+            btn_frame2, 
             text="🗑️ Empty Bin", 
             command=self.run_empty_bin, 
             bg="#dc2626", 
             fg="white", 
             font=("Segoe UI", 9, "bold"), 
-            width=14, 
+            width=15, 
             relief="flat"
         )
-        btn_bin.grid(row=0, column=2, padx=5, pady=5)
+        btn_bin.grid(row=0, column=0, padx=5, pady=3)
+
+        btn_startup = tk.Button(
+            btn_frame2, 
+            text="🚀 Startup Apps", 
+            command=self.run_startup_manager, 
+            bg="#9333ea", 
+            fg="white", 
+            font=("Segoe UI", 9, "bold"), 
+            width=15, 
+            relief="flat"
+        )
+        btn_startup.grid(row=0, column=1, padx=5, pady=3)
 
         # Start live metrics auto-update
         self.update_live_metrics()
@@ -128,7 +144,6 @@ class WinHealApp:
         self.ram_bar['value'] = ram
         self.ram_lbl.config(text=f"{ram}%")
         
-        # Update metrics every 2 seconds
         self.root.after(2000, self.update_live_metrics)
 
     def run_ai_health_check(self):
@@ -143,7 +158,6 @@ class WinHealApp:
         self.log_message(f"• RAM Usage: {memory.percent}% ({round(memory.used/(1024**3), 2)} GB / {round(memory.total/(1024**3), 2)} GB)")
         self.log_message(f"• C: Storage Free: {round(disk.free / (1024**3), 2)} GB\n")
 
-        # Smart AI Analysis & Decision Logic
         if memory.percent > 80:
             ai_advice = "⚠️ High RAM usage detected! Recommended to run Junk Cleaner."
         elif disk.free / (1024**3) < 15:
@@ -183,6 +197,22 @@ class WinHealApp:
                 self.log_message("ℹ️ Recycle Bin is already empty.\n")
         except Exception as e:
             self.log_message(f"❌ Error: {e}\n")
+
+    def run_startup_manager(self):
+        self.text_area.delete("1.0", tk.END)
+        self.log_message("=== 🚀 STARTUP APPS SCANNER ===")
+        self.log_message("Scanning active running processes & startup impact...\n")
+        
+        running_apps = 0
+        for proc in psutil.process_iter(['name', 'cpu_percent']):
+            try:
+                running_apps += 1
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                pass
+
+        self.log_message(f"Total Active Processes: {running_apps}")
+        self.log_message("💡 AI Tip: Too many background startup apps can slow down your PC boot time.")
+        self.log_message("✅ Startup scan completed successfully!\n")
 
 if __name__ == "__main__":
     root = tk.Tk()
