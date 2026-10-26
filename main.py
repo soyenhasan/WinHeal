@@ -9,7 +9,7 @@ class WinHealApp:
     def __init__(self, root):
         self.root = root
         self.root.title("WinHeal AI 2027 - Advanced System Optimizer")
-        self.root.geometry("520x650")
+        self.root.geometry("520x670")
         self.root.config(bg="#0f172a")  # Dark Futuristic Theme
 
         # Title Header
@@ -51,7 +51,7 @@ class WinHealApp:
         # AI Recommendation Banner
         self.ai_status_lbl = tk.Label(
             root, 
-            text="🤖 AI Engine Status: Ready to Analyze System Health...", 
+            text="🤖 AI Engine Status: Ready to Detect System Issues...", 
             font=("Segoe UI", 9, "italic"), 
             bg="#1e293b", 
             fg="#facc15",
@@ -99,7 +99,7 @@ class WinHealApp:
         )
         btn_temp.grid(row=0, column=1, padx=5, pady=3)
 
-        # Action Buttons Frame 2 (New Advanced Features)
+        # Action Buttons Frame 2
         btn_frame2 = tk.Frame(root, bg="#0f172a")
         btn_frame2.pack(pady=5)
 
@@ -148,7 +148,7 @@ class WinHealApp:
 
     def run_ai_health_check(self):
         self.text_area.delete("1.0", tk.END)
-        self.log_message("=== 🤖 WINHEAL AI DIAGNOSTIC REPORT ===")
+        self.log_message("=== 🤖 WINHEAL AI SMART DIAGNOSTIC SCAN ===")
         
         cpu_usage = psutil.cpu_percent()
         memory = psutil.virtual_memory()
@@ -158,15 +158,29 @@ class WinHealApp:
         self.log_message(f"• RAM Usage: {memory.percent}% ({round(memory.used/(1024**3), 2)} GB / {round(memory.total/(1024**3), 2)} GB)")
         self.log_message(f"• C: Storage Free: {round(disk.free / (1024**3), 2)} GB\n")
 
+        # Intelligent Automated Problem Detection & Decision Logic
+        issues_found = 0
+        
         if memory.percent > 80:
-            ai_advice = "⚠️ High RAM usage detected! Recommended to run Junk Cleaner."
-        elif disk.free / (1024**3) < 15:
-            ai_advice = "⚠️ Storage running low on C: drive! Clean temp files to free space."
-        else:
-            ai_advice = "✅ System Health Excellent! All metrics optimal."
+            issues_found += 1
+            self.log_message("❌ [Issue Detected]: High RAM overload! Background apps are consuming memory.")
+        
+        if disk.free / (1024**3) < 15:
+            issues_found += 1
+            self.log_message("❌ [Issue Detected]: C: Drive storage running critically low (< 15GB).")
 
-        self.ai_status_lbl.config(text=f"🤖 AI Assessment: {ai_advice}")
-        self.log_message(f"[AI INSIGHT]: {ai_advice}\n")
+        if cpu_usage > 85:
+            issues_found += 1
+            self.log_message("❌ [Issue Detected]: CPU is under heavy load!")
+
+        if issues_found == 0:
+            ai_advice = "✅ No major issues detected! Your PC is running smoothly."
+            self.ai_status_lbl.config(text=f"🤖 AI Assessment: {ai_advice}", fg="#22c55e")
+        else:
+            ai_advice = f"⚠️ {issues_found} system issue(s) detected! Check terminal & clean up."
+            self.ai_status_lbl.config(text=f"🤖 AI Assessment: {ai_advice}", fg="#f87171")
+
+        self.log_message(f"\n[AI SUMMARY]: {ai_advice}\n")
 
     def run_clean_temp(self):
         self.log_message("=== 🧹 CLEANING TEMPORARY JUNK FILES ===")
@@ -185,7 +199,7 @@ class WinHealApp:
 
         self.log_message(f"Deleted Files: {deleted_files}")
         self.log_message(f"In-Use Skipped: {failed_files}\n")
-        self.log_message("✅ Cleanup Complete!\n")
+        self.log_message("✅ Cleanup Complete! System storage optimized.\n")
 
     def run_empty_bin(self):
         self.log_message("=== 🗑️ EMPTYING RECYCLE BIN ===")
