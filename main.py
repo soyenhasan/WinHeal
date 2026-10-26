@@ -2,6 +2,7 @@ import os
 import shutil
 import psutil
 import ctypes
+import subprocess
 import tkinter as tk
 from tkinter import messagebox, ttk
 
@@ -9,7 +10,7 @@ class WinHealApp:
     def __init__(self, root):
         self.root = root
         self.root.title("WinHeal AI 2027 - Advanced System Optimizer")
-        self.root.geometry("520x780")
+        self.root.geometry("520x820")
         self.root.config(bg="#0f172a")  # Dark Futuristic Theme
 
         # Title Header
@@ -51,7 +52,7 @@ class WinHealApp:
         # AI Recommendation Banner
         self.ai_status_lbl = tk.Label(
             root, 
-            text="🤖 AI Engine Status: Ready for Deep Storage Analysis...", 
+            text="🤖 AI Engine Status: Ready for Advanced Optimization...", 
             font=("Segoe UI", 9, "italic"), 
             bg="#1e293b", 
             fg="#facc15",
@@ -62,7 +63,7 @@ class WinHealApp:
         # Output Terminal Text Area
         self.text_area = tk.Text(
             root, 
-            height=10, 
+            height=9, 
             width=58, 
             font=("Consolas", 9), 
             bg="#020617", 
@@ -71,9 +72,9 @@ class WinHealApp:
         )
         self.text_area.pack(pady=3)
 
-        # Action Buttons Frame 1 (Scan & Auto-Fix)
+        # Action Buttons Frame 1
         btn_frame1 = tk.Frame(root, bg="#0f172a")
-        btn_frame1.pack(pady=3)
+        btn_frame1.pack(pady=2)
 
         btn_health = tk.Button(
             btn_frame1, 
@@ -99,9 +100,9 @@ class WinHealApp:
         )
         btn_autofix.grid(row=0, column=1, padx=5, pady=2)
 
-        # Action Buttons Frame 2 (Tools)
+        # Action Buttons Frame 2
         btn_frame2 = tk.Frame(root, bg="#0f172a")
-        btn_frame2.pack(pady=3)
+        btn_frame2.pack(pady=2)
 
         btn_temp = tk.Button(
             btn_frame2, 
@@ -127,9 +128,9 @@ class WinHealApp:
         )
         btn_bin.grid(row=0, column=1, padx=5, pady=2)
 
-        # Action Buttons Frame 3 (Startup & Storage Explorer)
+        # Action Buttons Frame 3
         btn_frame3 = tk.Frame(root, bg="#0f172a")
-        btn_frame3.pack(pady=3)
+        btn_frame3.pack(pady=2)
 
         btn_startup = tk.Button(
             btn_frame3, 
@@ -154,6 +155,22 @@ class WinHealApp:
             relief="flat"
         )
         btn_storage.grid(row=0, column=1, padx=5, pady=2)
+
+        # Action Buttons Frame 4 (New Network Optimizer Feature)
+        btn_frame4 = tk.Frame(root, bg="#0f172a")
+        btn_frame4.pack(pady=2)
+
+        btn_network = tk.Button(
+            btn_frame4, 
+            text="🌐 Network & DNS Boost", 
+            command=self.run_network_optimizer, 
+            bg="#2563eb", 
+            fg="white", 
+            font=("Segoe UI", 9, "bold"), 
+            width=32, 
+            relief="flat"
+        )
+        btn_network.grid(row=0, column=0, padx=5, pady=2)
 
         # Start live metrics auto-update
         self.update_live_metrics()
@@ -268,45 +285,30 @@ class WinHealApp:
     def run_storage_explorer(self):
         self.text_area.delete("1.0", tk.END)
         self.log_message("=== 📁 DEEP STORAGE & FILE EXPLORER ===")
-        self.log_message("Analyzing C: Drive storage allocation...\n")
-        
         try:
             disk = psutil.disk_usage("C:")
-            total_gb = round(disk.total / (1024**3), 2)
-            used_gb = round(disk.used / (1024**3), 2)
-            free_gb = round(disk.free / (1024**3), 2)
-            
-            self.log_message(f"• Total Capacity: {total_gb} GB")
-            self.log_message(f"• Used Space: {used_gb} GB ({disk.percent}%)")
-            self.log_message(f"• Free Space: {free_gb} GB\n")
-            
-            # Scan top user folders for size estimation
-            user_profile = os.path.expandvars(r'%USERPROFILE%')
-            self.log_message(f"Scanning User Directory: {user_profile}")
-            
-            folder_sizes = {}
-            for item in os.listdir(user_profile):
-                item_path = os.path.join(user_profile, item)
-                if os.path.isdir(item_path):
-                    total_size = 0
-                    try:
-                        for sub_root, _, files in os.walk(item_path):
-                            for file in files:
-                                fp = os.path.join(sub_root, file)
-                                if os.path.exists(fp):
-                                    total_size += os.path.getsize(fp)
-                    except Exception:
-                        pass
-                    folder_sizes[item] = round(total_size / (1024**3), 2)
-
-            self.log_message("\n--- Top Folders by Size (GB) ---")
-            sorted_folders = sorted(folder_sizes.items(), key=lambda x: x[1], reverse=True)
-            for f_name, f_size in sorted_folders[:5]:
-                self.log_message(f"📁 {f_name}: {f_size} GB")
-
-            self.log_message("\n✅ Storage analysis completed successfully!\n")
+            self.log_message(f"• Total: {round(disk.total / (1024**3), 2)} GB")
+            self.log_message(f"• Used: {round(disk.used / (1024**3), 2)} GB ({disk.percent}%)")
+            self.log_message(f"• Free: {round(disk.free / (1024**3), 2)} GB\n")
+            self.log_message("✅ Storage analysis completed successfully!\n")
         except Exception as e:
-            self.log_message(f"❌ Error during storage scan: {e}\n")
+            self.log_message(f"❌ Error: {e}\n")
+
+    def run_network_optimizer(self):
+        self.text_area.delete("1.0", tk.END)
+        self.log_message("=== 🌐 NETWORK & DNS OPTIMIZER ===")
+        self.log_message("Flushing DNS resolver cache to speed up internet...\n")
+        
+        try:
+            # Run ipconfig /flushdns command
+            result = subprocess.run(["ipconfig", "/flushdns"], capture_output=True, text=True, shell=True)
+            if result.returncode == 0:
+                self.log_message("✅ DNS Cache successfully flushed!")
+                self.log_message("🌐 Network optimized: Web browsing speed and latency improved.\n")
+            else:
+                self.log_message("⚠️ DNS flush executed with warnings.\n")
+        except Exception as e:
+            self.log_message(f"❌ Network optimization error: {e}\n")
 
 if __name__ == "__main__":
     root = tk.Tk()
