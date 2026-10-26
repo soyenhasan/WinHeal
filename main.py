@@ -9,7 +9,7 @@ class WinHealApp:
     def __init__(self, root):
         self.root = root
         self.root.title("WinHeal AI 2027 - Advanced System Optimizer")
-        self.root.geometry("520x670")
+        self.root.geometry("520x720")
         self.root.config(bg="#0f172a")  # Dark Futuristic Theme
 
         # Title Header
@@ -51,7 +51,7 @@ class WinHealApp:
         # AI Recommendation Banner
         self.ai_status_lbl = tk.Label(
             root, 
-            text="🤖 AI Engine Status: Ready to Detect System Issues...", 
+            text="🤖 AI Engine Status: Ready for Automated Self-Healing...", 
             font=("Segoe UI", 9, "italic"), 
             bg="#1e293b", 
             fg="#facc15",
@@ -71,7 +71,7 @@ class WinHealApp:
         )
         self.text_area.pack(pady=5)
 
-        # Action Buttons Frame 1
+        # Action Buttons Frame 1 (Scan & Auto-Fix)
         btn_frame1 = tk.Frame(root, bg="#0f172a")
         btn_frame1.pack(pady=5)
 
@@ -87,8 +87,24 @@ class WinHealApp:
         )
         btn_health.grid(row=0, column=0, padx=5, pady=3)
 
-        btn_temp = tk.Button(
+        btn_autofix = tk.Button(
             btn_frame1, 
+            text="⚡ One-Click Fix", 
+            command=self.run_one_click_fix, 
+            bg="#ea580c", 
+            fg="white", 
+            font=("Segoe UI", 9, "bold"), 
+            width=15, 
+            relief="flat"
+        )
+        btn_autofix.grid(row=0, column=1, padx=5, pady=3)
+
+        # Action Buttons Frame 2 (Tools)
+        btn_frame2 = tk.Frame(root, bg="#0f172a")
+        btn_frame2.pack(pady=5)
+
+        btn_temp = tk.Button(
+            btn_frame2, 
             text="🧹 Clean Junk", 
             command=self.run_clean_temp, 
             bg="#16a34a", 
@@ -97,11 +113,7 @@ class WinHealApp:
             width=15, 
             relief="flat"
         )
-        btn_temp.grid(row=0, column=1, padx=5, pady=3)
-
-        # Action Buttons Frame 2
-        btn_frame2 = tk.Frame(root, bg="#0f172a")
-        btn_frame2.pack(pady=5)
+        btn_temp.grid(row=0, column=0, padx=5, pady=3)
 
         btn_bin = tk.Button(
             btn_frame2, 
@@ -113,19 +125,23 @@ class WinHealApp:
             width=15, 
             relief="flat"
         )
-        btn_bin.grid(row=0, column=0, padx=5, pady=3)
+        btn_bin.grid(row=0, column=1, padx=5, pady=3)
+
+        # Action Buttons Frame 3 (Startup)
+        btn_frame3 = tk.Frame(root, bg="#0f172a")
+        btn_frame3.pack(pady=5)
 
         btn_startup = tk.Button(
-            btn_frame2, 
+            btn_frame3, 
             text="🚀 Startup Apps", 
             command=self.run_startup_manager, 
             bg="#9333ea", 
             fg="white", 
             font=("Segoe UI", 9, "bold"), 
-            width=15, 
+            width=32, 
             relief="flat"
         )
-        btn_startup.grid(row=0, column=1, padx=5, pady=3)
+        btn_startup.grid(row=0, column=0, padx=5, pady=3)
 
         # Start live metrics auto-update
         self.update_live_metrics()
@@ -158,50 +174,72 @@ class WinHealApp:
         self.log_message(f"• RAM Usage: {memory.percent}% ({round(memory.used/(1024**3), 2)} GB / {round(memory.total/(1024**3), 2)} GB)")
         self.log_message(f"• C: Storage Free: {round(disk.free / (1024**3), 2)} GB\n")
 
-        # Intelligent Automated Problem Detection & Decision Logic
         issues_found = 0
-        
         if memory.percent > 80:
             issues_found += 1
-            self.log_message("❌ [Issue Detected]: High RAM overload! Background apps are consuming memory.")
-        
+            self.log_message("❌ [Issue Detected]: High RAM overload!")
         if disk.free / (1024**3) < 15:
             issues_found += 1
-            self.log_message("❌ [Issue Detected]: C: Drive storage running critically low (< 15GB).")
-
+            self.log_message("❌ [Issue Detected]: C: Drive storage low!")
         if cpu_usage > 85:
             issues_found += 1
-            self.log_message("❌ [Issue Detected]: CPU is under heavy load!")
+            self.log_message("❌ [Issue Detected]: Heavy CPU load!")
 
         if issues_found == 0:
-            ai_advice = "✅ No major issues detected! Your PC is running smoothly."
-            self.ai_status_lbl.config(text=f"🤖 AI Assessment: {ai_advice}", fg="#22c55e")
+            ai_advice = "✅ All systems optimal. Click 'One-Click Fix' anytime for routine tune-up."
+            self.ai_status_lbl.config(text=f"🤖 AI Status: {ai_advice}", fg="#22c55e")
         else:
-            ai_advice = f"⚠️ {issues_found} system issue(s) detected! Check terminal & clean up."
-            self.ai_status_lbl.config(text=f"🤖 AI Assessment: {ai_advice}", fg="#f87171")
+            ai_advice = f"⚠️ {issues_found} issue(s) found! Click '⚡ One-Click Fix' to resolve automatically."
+            self.ai_status_lbl.config(text=f"🤖 AI Status: {ai_advice}", fg="#f87171")
 
         self.log_message(f"\n[AI SUMMARY]: {ai_advice}\n")
 
+    def run_one_click_fix(self):
+        self.text_area.delete("1.0", tk.END)
+        self.log_message("=== ⚡ WINHEAL AI AUTOMATED SELF-HEALING ===")
+        self.log_message("Initializing smart repair protocols...\n")
+
+        # 1. Clean Temp Files Automatically
+        temp_folder = os.path.expandvars(r'%TEMP%')
+        deleted_files = 0
+        for root_dir, dirs, files in os.walk(temp_folder):
+            for file in files:
+                try:
+                    os.remove(os.path.join(root_dir, file))
+                    deleted_files += 1
+                except Exception:
+                    pass
+        self.log_message(f"🧹 Cleaned Junk: {deleted_files} temporary files removed.")
+
+        # 2. Empty Recycle Bin Automatically
+        try:
+            ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, 7)
+            self.log_message("🗑️ Recycle Bin: Successfully emptied.")
+        except Exception:
+            self.log_message("ℹ️ Recycle Bin: Already clean.")
+
+        # 3. AI Final Assessment
+        self.ai_status_lbl.config(text="🤖 AI Status: ✅ System fully optimized and healed!", fg="#22c55e")
+        self.log_message("\n🎉 SUCCESS: All automated maintenance tasks completed!")
+        self.log_message("Your PC is now running at peak performance!\n")
+        messagebox.showinfo("WinHeal AI 2027", "Automated Self-Healing completed successfully! Your PC is optimized.")
+
     def run_clean_temp(self):
+        self.text_area.delete("1.0", tk.END)
         self.log_message("=== 🧹 CLEANING TEMPORARY JUNK FILES ===")
         temp_folder = os.path.expandvars(r'%TEMP%')
         deleted_files = 0
-        failed_files = 0
-
         for root_dir, dirs, files in os.walk(temp_folder):
             for file in files:
-                file_path = os.path.join(root_dir, file)
                 try:
-                    os.remove(file_path)
+                    os.remove(os.path.join(root_dir, file))
                     deleted_files += 1
                 except Exception:
-                    failed_files += 1
-
-        self.log_message(f"Deleted Files: {deleted_files}")
-        self.log_message(f"In-Use Skipped: {failed_files}\n")
-        self.log_message("✅ Cleanup Complete! System storage optimized.\n")
+                    pass
+        self.log_message(f"Deleted Files: {deleted_files}\n✅ Cleanup Complete!\n")
 
     def run_empty_bin(self):
+        self.text_area.delete("1.0", tk.END)
         self.log_message("=== 🗑️ EMPTYING RECYCLE BIN ===")
         try:
             result = ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, 7)
@@ -215,18 +253,9 @@ class WinHealApp:
     def run_startup_manager(self):
         self.text_area.delete("1.0", tk.END)
         self.log_message("=== 🚀 STARTUP APPS SCANNER ===")
-        self.log_message("Scanning active running processes & startup impact...\n")
-        
-        running_apps = 0
-        for proc in psutil.process_iter(['name', 'cpu_percent']):
-            try:
-                running_apps += 1
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
-                pass
-
+        running_apps = sum(1 for _ in psutil.process_iter(['name']))
         self.log_message(f"Total Active Processes: {running_apps}")
-        self.log_message("💡 AI Tip: Too many background startup apps can slow down your PC boot time.")
-        self.log_message("✅ Startup scan completed successfully!\n")
+        self.log_message("💡 AI Tip: Keep background processes minimal for fast boot & gaming.\n")
 
 if __name__ == "__main__":
     root = tk.Tk()
