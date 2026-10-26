@@ -9,7 +9,7 @@ class WinHealApp:
     def __init__(self, root):
         self.root = root
         self.root.title("WinHeal AI 2027 - Advanced System Optimizer")
-        self.root.geometry("520x720")
+        self.root.geometry("520x780")
         self.root.config(bg="#0f172a")  # Dark Futuristic Theme
 
         # Title Header
@@ -20,7 +20,7 @@ class WinHealApp:
             bg="#0f172a", 
             fg="#38bdf8"
         )
-        title_label.pack(pady=10)
+        title_label.pack(pady=8)
 
         # Real-time Metrics Frame
         metrics_frame = tk.LabelFrame(
@@ -30,34 +30,34 @@ class WinHealApp:
             bg="#0f172a", 
             fg="#94a3b8",
             padx=15, 
-            pady=8
+            pady=6
         )
-        metrics_frame.pack(fill="x", padx=20, pady=5)
+        metrics_frame.pack(fill="x", padx=20, pady=4)
 
         # CPU Usage Bar
         tk.Label(metrics_frame, text="CPU Usage:", font=("Segoe UI", 9), bg="#0f172a", fg="#f8fafc").grid(row=0, column=0, sticky="w")
         self.cpu_bar = ttk.Progressbar(metrics_frame, length=310, mode="determinate")
-        self.cpu_bar.grid(row=0, column=1, padx=10, pady=4)
+        self.cpu_bar.grid(row=0, column=1, padx=10, pady=3)
         self.cpu_lbl = tk.Label(metrics_frame, text="0%", font=("Segoe UI", 9, "bold"), bg="#0f172a", fg="#38bdf8")
         self.cpu_lbl.grid(row=0, column=2)
 
         # RAM Usage Bar
         tk.Label(metrics_frame, text="RAM Usage:", font=("Segoe UI", 9), bg="#0f172a", fg="#f8fafc").grid(row=1, column=0, sticky="w")
         self.ram_bar = ttk.Progressbar(metrics_frame, length=310, mode="determinate")
-        self.ram_bar.grid(row=1, column=1, padx=10, pady=4)
+        self.ram_bar.grid(row=1, column=1, padx=10, pady=3)
         self.ram_lbl = tk.Label(metrics_frame, text="0%", font=("Segoe UI", 9, "bold"), bg="#0f172a", fg="#38bdf8")
         self.ram_lbl.grid(row=1, column=2)
 
         # AI Recommendation Banner
         self.ai_status_lbl = tk.Label(
             root, 
-            text="🤖 AI Engine Status: Ready for Automated Self-Healing...", 
+            text="🤖 AI Engine Status: Ready for Deep Storage Analysis...", 
             font=("Segoe UI", 9, "italic"), 
             bg="#1e293b", 
             fg="#facc15",
-            pady=6
+            pady=5
         )
-        self.ai_status_lbl.pack(fill="x", padx=20, pady=8)
+        self.ai_status_lbl.pack(fill="x", padx=20, pady=6)
 
         # Output Terminal Text Area
         self.text_area = tk.Text(
@@ -69,11 +69,11 @@ class WinHealApp:
             fg="#22c55e",
             insertbackground="white"
         )
-        self.text_area.pack(pady=5)
+        self.text_area.pack(pady=3)
 
         # Action Buttons Frame 1 (Scan & Auto-Fix)
         btn_frame1 = tk.Frame(root, bg="#0f172a")
-        btn_frame1.pack(pady=5)
+        btn_frame1.pack(pady=3)
 
         btn_health = tk.Button(
             btn_frame1, 
@@ -85,7 +85,7 @@ class WinHealApp:
             width=15, 
             relief="flat"
         )
-        btn_health.grid(row=0, column=0, padx=5, pady=3)
+        btn_health.grid(row=0, column=0, padx=5, pady=2)
 
         btn_autofix = tk.Button(
             btn_frame1, 
@@ -97,11 +97,11 @@ class WinHealApp:
             width=15, 
             relief="flat"
         )
-        btn_autofix.grid(row=0, column=1, padx=5, pady=3)
+        btn_autofix.grid(row=0, column=1, padx=5, pady=2)
 
         # Action Buttons Frame 2 (Tools)
         btn_frame2 = tk.Frame(root, bg="#0f172a")
-        btn_frame2.pack(pady=5)
+        btn_frame2.pack(pady=3)
 
         btn_temp = tk.Button(
             btn_frame2, 
@@ -113,7 +113,7 @@ class WinHealApp:
             width=15, 
             relief="flat"
         )
-        btn_temp.grid(row=0, column=0, padx=5, pady=3)
+        btn_temp.grid(row=0, column=0, padx=5, pady=2)
 
         btn_bin = tk.Button(
             btn_frame2, 
@@ -125,11 +125,11 @@ class WinHealApp:
             width=15, 
             relief="flat"
         )
-        btn_bin.grid(row=0, column=1, padx=5, pady=3)
+        btn_bin.grid(row=0, column=1, padx=5, pady=2)
 
-        # Action Buttons Frame 3 (Startup)
+        # Action Buttons Frame 3 (Startup & Storage Explorer)
         btn_frame3 = tk.Frame(root, bg="#0f172a")
-        btn_frame3.pack(pady=5)
+        btn_frame3.pack(pady=3)
 
         btn_startup = tk.Button(
             btn_frame3, 
@@ -138,10 +138,22 @@ class WinHealApp:
             bg="#9333ea", 
             fg="white", 
             font=("Segoe UI", 9, "bold"), 
-            width=32, 
+            width=15, 
             relief="flat"
         )
-        btn_startup.grid(row=0, column=0, padx=5, pady=3)
+        btn_startup.grid(row=0, column=0, padx=5, pady=2)
+
+        btn_storage = tk.Button(
+            btn_frame3, 
+            text="📁 Storage Explorer", 
+            command=self.run_storage_explorer, 
+            bg="#0d9488", 
+            fg="white", 
+            font=("Segoe UI", 9, "bold"), 
+            width=15, 
+            relief="flat"
+        )
+        btn_storage.grid(row=0, column=1, padx=5, pady=2)
 
         # Start live metrics auto-update
         self.update_live_metrics()
@@ -199,7 +211,6 @@ class WinHealApp:
         self.log_message("=== ⚡ WINHEAL AI AUTOMATED SELF-HEALING ===")
         self.log_message("Initializing smart repair protocols...\n")
 
-        # 1. Clean Temp Files Automatically
         temp_folder = os.path.expandvars(r'%TEMP%')
         deleted_files = 0
         for root_dir, dirs, files in os.walk(temp_folder):
@@ -211,18 +222,15 @@ class WinHealApp:
                     pass
         self.log_message(f"🧹 Cleaned Junk: {deleted_files} temporary files removed.")
 
-        # 2. Empty Recycle Bin Automatically
         try:
             ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, 7)
             self.log_message("🗑️ Recycle Bin: Successfully emptied.")
         except Exception:
             self.log_message("ℹ️ Recycle Bin: Already clean.")
 
-        # 3. AI Final Assessment
         self.ai_status_lbl.config(text="🤖 AI Status: ✅ System fully optimized and healed!", fg="#22c55e")
-        self.log_message("\n🎉 SUCCESS: All automated maintenance tasks completed!")
-        self.log_message("Your PC is now running at peak performance!\n")
-        messagebox.showinfo("WinHeal AI 2027", "Automated Self-Healing completed successfully! Your PC is optimized.")
+        self.log_message("\n🎉 SUCCESS: All automated maintenance tasks completed!\n")
+        messagebox.showinfo("WinHeal AI 2027", "Automated Self-Healing completed successfully!")
 
     def run_clean_temp(self):
         self.text_area.delete("1.0", tk.END)
@@ -255,7 +263,50 @@ class WinHealApp:
         self.log_message("=== 🚀 STARTUP APPS SCANNER ===")
         running_apps = sum(1 for _ in psutil.process_iter(['name']))
         self.log_message(f"Total Active Processes: {running_apps}")
-        self.log_message("💡 AI Tip: Keep background processes minimal for fast boot & gaming.\n")
+        self.log_message("💡 AI Tip: Keep background processes minimal for fast boot.\n")
+
+    def run_storage_explorer(self):
+        self.text_area.delete("1.0", tk.END)
+        self.log_message("=== 📁 DEEP STORAGE & FILE EXPLORER ===")
+        self.log_message("Analyzing C: Drive storage allocation...\n")
+        
+        try:
+            disk = psutil.disk_usage("C:")
+            total_gb = round(disk.total / (1024**3), 2)
+            used_gb = round(disk.used / (1024**3), 2)
+            free_gb = round(disk.free / (1024**3), 2)
+            
+            self.log_message(f"• Total Capacity: {total_gb} GB")
+            self.log_message(f"• Used Space: {used_gb} GB ({disk.percent}%)")
+            self.log_message(f"• Free Space: {free_gb} GB\n")
+            
+            # Scan top user folders for size estimation
+            user_profile = os.path.expandvars(r'%USERPROFILE%')
+            self.log_message(f"Scanning User Directory: {user_profile}")
+            
+            folder_sizes = {}
+            for item in os.listdir(user_profile):
+                item_path = os.path.join(user_profile, item)
+                if os.path.isdir(item_path):
+                    total_size = 0
+                    try:
+                        for sub_root, _, files in os.walk(item_path):
+                            for file in files:
+                                fp = os.path.join(sub_root, file)
+                                if os.path.exists(fp):
+                                    total_size += os.path.getsize(fp)
+                    except Exception:
+                        pass
+                    folder_sizes[item] = round(total_size / (1024**3), 2)
+
+            self.log_message("\n--- Top Folders by Size (GB) ---")
+            sorted_folders = sorted(folder_sizes.items(), key=lambda x: x[1], reverse=True)
+            for f_name, f_size in sorted_folders[:5]:
+                self.log_message(f"📁 {f_name}: {f_size} GB")
+
+            self.log_message("\n✅ Storage analysis completed successfully!\n")
+        except Exception as e:
+            self.log_message(f"❌ Error during storage scan: {e}\n")
 
 if __name__ == "__main__":
     root = tk.Tk()
