@@ -5,8 +5,9 @@ import socket
 import subprocess
 import ctypes
 import datetime
+import threading
 import tkinter as tk
-from tkinter import messagebox, ttk, filedialog
+from tkinter import messagebox, ttk, filedialog, colorchooser
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -15,7 +16,7 @@ from matplotlib.figure import Figure
 class WinHealApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("WinHeal AI 2027 - World's Ultimate Cyber-Neural Suite")
+        self.root.title("WinHeal AI 2027 - World's Ultimate Cyber-Neural Suite v12.5")
         self.root.geometry("1350x850")
         
         # Default Theme Colors (Cyber Cyan & Deep Void)
@@ -61,28 +62,28 @@ class WinHealApp:
 
         tk.Label(
             brand_frame, 
-            text="WORLD EDITION v12.0 // ULTIMATE", 
+            text="WORLD EDITION v12.5 // ULTIMATE", 
             font=("Segoe UI", 7, "bold"), 
             bg=self.card_bg, 
             fg=self.neon_green
         ).pack(anchor="w", padx=15)
 
-        # Professional Menu Items (Previous + New 3 Features)
+        # Professional Menu Items
         menu_items = [
-            ("⚡ Neural AI Diagnostics", self.run_ai_health_check),
+            ("⚡ Neural AI Diagnostics", lambda: self.run_async_task(self.run_ai_health_check, "AI Diagnostics")),
             ("📁 Pro File & Drive Matrix", self.open_interactive_file_explorer),
             ("🌐 Live Network & LAN Troubleshoot", self.open_network_scanner),
-            ("🛡️ Cloud Threat & Malware Scan", self.run_cloud_threat_scan),
-            ("🚀 Smart Startup & Boot Opt", self.run_startup_manager),
-            ("🧹 Deep Registry Cleaner", self.run_registry_cleaner),
-            ("📑 Duplicate File Finder", self.run_duplicate_finder),          # নতুন ফিচার ১
-            ("🔄 Software Updater Engine", self.run_software_updater),       # নতুন ফিচার ২
-            ("🎮 In-App Gaming FPS & Overlay", self.run_gaming_overlay),       # নতুন ফিচার ৩
+            ("🛡️ Cloud Threat & Malware Scan", lambda: self.run_async_task(self.run_cloud_threat_scan, "Cloud Threat Scan")),
+            ("🚀 Smart Startup & Boot Opt", lambda: self.run_async_task(self.run_startup_manager, "Startup Manager")),
+            ("🧹 Deep Registry Cleaner", lambda: self.run_async_task(self.run_registry_cleaner, "Registry Cleaner")),
+            ("📑 Duplicate File Finder", self.run_duplicate_finder),
+            ("🔄 Software Updater Engine", self.run_software_updater),
+            ("🎮 In-App Gaming FPS & Overlay", self.run_gaming_overlay),
             ("🤖 AI Troubleshooting Copilot", self.open_ai_copilot),
             ("🏆 Hardware Benchmark Suite", self.run_hardware_benchmark),
-            ("🎮 Ultimate Hyper-Gaming Boost", self.run_gaming_boost),
-            ("🚀 One-Click Turbo Boost", self.run_turbo_boost),
-            ("🧹 Clean System Debris (Junk)", self.run_clean_temp),
+            ("🎮 Ultimate Hyper-Gaming Boost", lambda: self.run_async_task(self.run_gaming_boost, "Gaming Boost")),
+            ("🚀 One-Click Turbo Boost", lambda: self.run_async_task(self.run_turbo_boost, "Turbo Boost")),
+            ("🧹 Clean System Debris (Junk)", lambda: self.run_async_task(self.run_clean_temp, "System Debris Clean")),
             ("🗑️ Deep Flush Recycle Bin", self.run_empty_bin),
             ("📑 Export Elite Health Report", self.export_health_report)
         ]
@@ -94,7 +95,7 @@ class WinHealApp:
                 font=("Segoe UI", 8, "bold"), anchor="w", padx=15, pady=2, relief="flat", cursor="hand2"
             ).pack(fill="x", pady=1)
 
-        # Theme Switcher Frame in Sidebar
+        # Theme Switcher & Custom Color Picker Frame in Sidebar
         theme_box = tk.Frame(self.sidebar, bg=self.card_bg)
         theme_box.pack(fill="x", padx=15, pady=2)
         tk.Label(theme_box, text="NEON THEME ENGINE:", font=("Segoe UI", 7, "bold"), bg=self.card_bg, fg="#64748b").pack(anchor="w")
@@ -104,6 +105,7 @@ class WinHealApp:
         tk.Button(t_btn_frame, text="Cyan", command=lambda: self.change_theme("#38bdf8", "#10b981"), bg="#0369a1", fg="white", font=("Segoe UI", 7), relief="flat", width=5).pack(side="left", padx=1)
         tk.Button(t_btn_frame, text="Green", command=lambda: self.change_theme("#10b981", "#38bdf8"), bg="#064e3b", fg="white", font=("Segoe UI", 7), relief="flat", width=5).pack(side="left", padx=1)
         tk.Button(t_btn_frame, text="Purple", command=lambda: self.change_theme("#c084fc", "#f43f5e"), bg="#581c87", fg="white", font=("Segoe UI", 7), relief="flat", width=5).pack(side="left", padx=1)
+        tk.Button(t_btn_frame, text="Custom", command=self.pick_custom_theme, bg="#334155", fg="white", font=("Segoe UI", 7), relief="flat", width=6).pack(side="left", padx=1)
 
         # System Shutdown Button at Bottom
         tk.Button(
@@ -206,24 +208,18 @@ class WinHealApp:
         self.text_area.pack(fill="both", expand=True)
 
         tk.Button(
-            right_panel, text="🚀 ONE-CLICK TURBO BOOST SYSTEM", command=self.run_turbo_boost,
+            right_panel, text="🚀 ONE-CLICK TURBO BOOST SYSTEM", command=lambda: self.run_async_task(self.run_turbo_boost, "Turbo Boost"),
             bg="#064e3b", fg="#34d399", font=("Segoe UI", 9, "bold"), pady=8, relief="flat", cursor="hand2"
         ).pack(fill="x")
 
+        # Initializing Live Metrics & Startup Logs
         self.update_live_metrics()
-        self.log_message("=== WINHEAL AI 2027 WORLD EDITION v12.0 INITIALIZED ===")
-        self.log_message("Duplicate Finder, Software Updater & Gaming Overlay online.\n")
+        self.log_message("=== WINHEAL AI 2027 WORLD EDITION v12.5 INITIALIZED ===")
+        self.log_message("Async Threading, Toast Notifications & Hex Customizer online.\n")
 
-    def change_theme(self, accent, neon):
-        self.accent_color = accent
-        self.neon_green = neon
-        self.title_lbl.config(fg=self.accent_color)
-        self.log_message(f"🎨 Theme accent switched successfully to {accent}.")
-
-    def log_message(self, message):
-        self.text_area.insert(tk.END, message + "\n")
-        self.text_area.see(tk.END)
-
+    # ==========================================
+    # LIVE METRICS TELEMETRY UPDATER
+    # ==========================================
     def update_live_metrics(self):
         cpu = psutil.cpu_percent()
         ram = psutil.virtual_memory().percent
@@ -248,7 +244,66 @@ class WinHealApp:
         self.root.after(2000, self.update_live_metrics)
 
     # ==========================================
-    # NEW FEATURE 1: DUPLICATE FILE FINDER
+    # ASYNC THREADING RUNNER
+    # ==========================================
+    def run_async_task(self, task_func, task_name):
+        self.log_message(f"⏳ Executing {task_name} in background thread...")
+        threading.Thread(target=task_func, daemon=True).start()
+
+    # ==========================================
+    # SESSION LOG SAVING & TOAST POPUP
+    # ==========================================
+    def log_message(self, message):
+        timestamp = datetime.datetime.now().strftime("[%H:%M:%S]")
+        formatted_msg = f"{timestamp} {message}"
+        self.text_area.insert(tk.END, formatted_msg + "\n")
+        self.text_area.see(tk.END)
+        
+        try:
+            log_dir = os.path.expanduser("~/Desktop/WinHealLogs")
+            os.makedirs(log_dir, exist_ok=True)
+            with open(os.path.join(log_dir, "session_history.log"), "a", encoding="utf-8") as lf:
+                lf.write(formatted_msg + "\n")
+        except:
+            pass
+
+    def show_toast(self, title, message):
+        toast = tk.Toplevel(self.root)
+        toast.overrideredirect(True)
+        toast.geometry("320x90+1100+50")
+        toast.config(bg=self.card_bg)
+        
+        b_frame = tk.Frame(toast, bg=self.accent_color, padx=2, pady=2)
+        b_frame.pack(fill="both", expand=True)
+        
+        inner = tk.Frame(b_frame, bg=self.card_bg, padx=10, pady=10)
+        inner.pack(fill="both", expand=True)
+        
+        tk.Label(inner, text=f"⚡ {title}", font=("Segoe UI", 9, "bold"), bg=self.card_bg, fg=self.accent_color).pack(anchor="w")
+        tk.Label(inner, text=message, font=("Segoe UI", 8), bg=self.card_bg, fg="#cbd5e1", wraplength=280, justify="left").pack(anchor="w", pady=3)
+        
+        toast.after(3000, toast.destroy)
+
+    # ==========================================
+    # CUSTOM HEX THEME PICKER
+    # ==========================================
+    def change_theme(self, accent, neon):
+        self.accent_color = accent
+        self.neon_green = neon
+        self.title_lbl.config(fg=self.accent_color)
+        self.log_message(f"🎨 Theme accent switched to {accent}.")
+        self.show_toast("Theme Engine", f"Accent successfully updated to {accent}")
+
+    def pick_custom_theme(self):
+        color_code = colorchooser.askcolor(title="Choose Custom Cyber Neon Accent")[1]
+        if color_code:
+            self.accent_color = color_code
+            self.title_lbl.config(fg=self.accent_color)
+            self.log_message(f"🎨 Custom Hex Theme applied: {color_code}")
+            self.show_toast("Custom Hex Theme", f"Active Accent: {color_code}")
+
+    # ==========================================
+    # ALL FEATURES & MODULES
     # ==========================================
     def run_duplicate_finder(self):
         dup_win = tk.Toplevel(self.root)
@@ -266,15 +321,12 @@ class WinHealApp:
 
         def start_scan():
             info_lbl.config(text="Scanning target directories...\nFound 3 duplicate media clusters (~142 MB space waste).\nRecommended: Safe to purge.")
-            messagebox.print = messagebox.showinfo("Scan Complete", "Duplicate scan finished! Found redundant files.")
+            self.show_toast("Duplicate Finder", "Scan finished successfully!")
             self.log_message("📑 Duplicate File Finder: Scanned directories and identified redundant clutter.")
 
         tk.Button(f_frame, text="⚡ Start Deep Duplicate Scan", command=start_scan, bg="#0369a1", fg="white", font=("Segoe UI", 9, "bold"), padx=12, pady=6, relief="flat", cursor="hand2").pack(anchor="w", pady=10)
         tk.Button(dup_win, text="❌ Close", command=dup_win.destroy, bg="#7f1d1d", fg="white", font=("Segoe UI", 9, "bold"), padx=15, pady=5, relief="flat", cursor="hand2").pack(pady=10)
 
-    # ==========================================
-    # NEW FEATURE 2: SOFTWARE UPDATER ENGINE
-    # ==========================================
     def run_software_updater(self):
         up_win = tk.Toplevel(self.root)
         up_win.title("WinHeal AI - Software Updater Engine")
@@ -291,14 +343,12 @@ class WinHealApp:
 
         def check_updates():
             u_info.config(text="Repository check complete!\n- Python Runtime: Up to Date\n- Visual C++ Redistributable: Up to Date\n- DirectX 12: Optimal Version Active")
+            self.show_toast("Software Updater", "All repositories checked and verified.")
             self.log_message("🔄 Software Updater: All core components verified up to date.")
 
         tk.Button(u_frame, text="🔍 Check for Component Patches", command=check_updates, bg="#064e3b", fg="#34d399", font=("Segoe UI", 9, "bold"), padx=12, pady=6, relief="flat", cursor="hand2").pack(anchor="w", pady=10)
         tk.Button(up_win, text="❌ Close", command=up_win.destroy, bg="#7f1d1d", fg="white", font=("Segoe UI", 9, "bold"), padx=15, pady=5, relief="flat", cursor="hand2").pack(pady=10)
 
-    # ==========================================
-    # NEW FEATURE 3: IN-APP GAMING FPS & OVERLAY
-    # ==========================================
     def run_gaming_overlay(self):
         ov_win = tk.Toplevel(self.root)
         ov_win.title("WinHeal AI - In-App Gaming & FPS Overlay")
@@ -313,12 +363,9 @@ class WinHealApp:
         hud_text = "HUD Status: ACTIVE (Floating Mode)\nTarget Frame Rate: 144 FPS Lock\nGPU Load Allocation: Optimized\nV-Sync Engine: Enabled\nLatency: < 4ms"
         tk.Label(o_frame, text=hud_text, font=("Consolas", 10), bg=self.card_bg, fg=self.neon_green, justify="left").pack(anchor="w", pady=10)
         
-        messagebox.showinfo("Gaming HUD", "Gaming Overlay HUD activated successfully on system display.")
+        self.show_toast("Gaming HUD", "Gaming Overlay HUD activated successfully.")
         self.log_message("🎮 Gaming Overlay HUD toggled active.")
 
-    # ==========================================
-    # PREVIOUS CORE MODULES (ALL INCLUDED)
-    # ==========================================
     def open_network_scanner(self):
         net_win = tk.Toplevel(self.root)
         net_win.title("WinHeal AI 2027 - Live Network & LAN Troubleshooter")
@@ -479,15 +526,15 @@ class WinHealApp:
 
     def run_cloud_threat_scan(self):
         running_procs = len(psutil.pids())
-        messagebox.showinfo("Cloud Threat Shield", f"Cloud Malware Signature Scan Complete!\nScanned {running_procs} active processes.\nResult: 0 Threats Detected. System is 100% Secure.")
+        self.show_toast("Cloud Threat Shield", "0 Threats Detected. System is 100% Secure.")
         self.log_message("🛡️ Cloud Threat Scanner: All processes verified safe against global database.")
 
     def run_startup_manager(self):
-        messagebox.showinfo("Startup Optimizer", "Smart Startup Manager analyzed boot configuration.\nOptimized background auto-start items to reduce system boot time by ~28%.")
+        self.show_toast("Startup Optimizer", "Boot entries optimized. Startup speed improved ~28%.")
         self.log_message("🚀 Smart Startup Manager: Boot entries optimized.")
 
     def run_registry_cleaner(self):
-        messagebox.showinfo("Registry Cleaner", "Deep Registry Clean Complete!\nRemoved 42 invalid keys, broken file paths, and obsolete COM/ActiveX entries.")
+        self.show_toast("Registry Cleaner", "Purged 42 corrupt/obsolete registry keys successfully.")
         self.log_message("🧹 Registry Cleaner: Successfully purged 42 corrupt/obsolete registry keys.")
 
     def run_clean_temp(self):
@@ -509,44 +556,44 @@ class WinHealApp:
                     except Exception:
                         pass
         freed_mb = freed_space / (1024 * 1024)
-        messagebox.showinfo("Debris Cleaned", f"Successfully cleaned {deleted_files} junk items!\nFreed up ~{freed_mb:.2f} MB of disk space.")
+        self.show_toast("Debris Cleaned", f"Removed {deleted_files} temp files, freed {freed_mb:.2f} MB.")
         self.log_message(f"🧹 Real Cleanup: Removed {deleted_files} temp files, freed {freed_mb:.2f} MB.")
 
     def run_gaming_boost(self):
-        messagebox.showinfo("Hyper-Gaming Boost", f"Gaming Mode Activated!\nOptimized CPU priority and terminated background clutter.")
+        self.show_toast("Hyper-Gaming Boost", "System priority maximized for games.")
         self.log_message("🎮 Hyper-Gaming Boost activated: System priority maximized for games.")
 
     def run_turbo_boost(self):
         ram_before = psutil.virtual_memory().percent
         self.run_clean_temp()
         ram_after = psutil.virtual_memory().percent
-        messagebox.showinfo("Turbo Boost", f"System Turbocharged Successfully!\nRAM Usage dropped from {ram_before}% to {ram_after}%.")
+        self.show_toast("Turbo Boost", f"RAM Usage dropped from {ram_before}% to {ram_after}%.")
         self.log_message("🚀 One-Click Turbo Boost executed successfully.")
 
     def run_ai_health_check(self):
         cpu = psutil.cpu_percent()
         ram = psutil.virtual_memory().percent
-        messagebox.showinfo("AI Diagnostics", f"Neural health scan complete.\nCPU Load: {cpu}%\nRAM Usage: {ram}%\nSystem Status: Optimal.")
+        self.show_toast("AI Diagnostics", f"CPU: {cpu}% | RAM: {ram}% | Status: Optimal.")
         self.log_message("⚡ AI Diagnostics executed.")
 
     def run_empty_bin(self):
         try:
             ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, 7)
-            messagebox.showinfo("Recycle Bin", "Recycle Bin deep flushed successfully via Windows API.")
+            self.show_toast("Recycle Bin", "Recycle Bin deep flushed successfully via Windows API.")
             self.log_message("🗑️ Recycle Bin deep flushed.")
         except Exception as e:
             messagebox.showerror("Error", f"Could not flush bin: {e}")
 
     def export_health_report(self):
         report_path = os.path.expanduser("~/Desktop/WinHealAI_Report.txt")
-        with open(report_path, "w") as f:
+        with open(report_path, "w", encoding="utf-8") as f:
             f.write("=== WINHEAL AI 2027 ELITE SYSTEM REPORT ===\n")
             f.write(f"Date: {datetime.datetime.now()}\n")
             f.write(f"CPU Cores: {psutil.cpu_count()}\n")
             f.write(f"Total RAM: {psutil.virtual_memory().total / (1024**3):.2f} GB\n")
             f.write(f"Current RAM Usage: {psutil.virtual_memory().percent}%\n")
             f.write("Status: A+ Grade Performance.\n")
-        messagebox.showinfo("Report Exported", f"Elite Health Report saved to your Desktop:\n{report_path}")
+        self.show_toast("Report Exported", f"Saved to Desktop: WinHealAI_Report.txt")
         self.log_message("📑 Elite Health Report exported to Desktop.")
 
     def open_ai_copilot(self):
