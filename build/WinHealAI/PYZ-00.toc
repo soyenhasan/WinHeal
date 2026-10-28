@@ -2464,6 +2464,10 @@
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tkinter\\__init__.py',
    'PYMODULE'),
+  ('tkinter.colorchooser',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tkinter\\colorchooser.py',
+   'PYMODULE'),
   ('tkinter.commondialog',
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tkinter\\commondialog.py',
