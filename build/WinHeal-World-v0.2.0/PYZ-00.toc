@@ -1,4 +1,4 @@
-('D:\\Documents\\WinHeal-AI\\build\\main\\PYZ-00.pyz',
+('D:\\Documents\\WinHeal-AI\\build\\WinHeal-World-v0.2.0\\PYZ-00.pyz',
  [('PIL',
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\PIL\\__init__.py',
@@ -319,9 +319,21 @@
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_compat_pickle.py',
    'PYMODULE'),
+  ('_distutils_hack',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\_distutils_hack\\__init__.py',
+   'PYMODULE'),
+  ('_distutils_hack.override',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\_distutils_hack\\override.py',
+   'PYMODULE'),
   ('_opcode_metadata',
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_opcode_metadata.py',
+   'PYMODULE'),
+  ('_osx_support',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_osx_support.py',
    'PYMODULE'),
   ('_py_abc',
    'C:\\Users\\NAYEM '
@@ -639,6 +651,42 @@
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\calendar.py',
    'PYMODULE'),
+  ('certifi',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\certifi\\__init__.py',
+   'PYMODULE'),
+  ('certifi.core',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\certifi\\core.py',
+   'PYMODULE'),
+  ('charset_normalizer',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\charset_normalizer\\__init__.py',
+   'PYMODULE'),
+  ('charset_normalizer.api',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\charset_normalizer\\api.py',
+   'PYMODULE'),
+  ('charset_normalizer.constant',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\charset_normalizer\\constant.py',
+   'PYMODULE'),
+  ('charset_normalizer.legacy',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\charset_normalizer\\legacy.py',
+   'PYMODULE'),
+  ('charset_normalizer.models',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\charset_normalizer\\models.py',
+   'PYMODULE'),
+  ('charset_normalizer.utils',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\charset_normalizer\\utils.py',
+   'PYMODULE'),
+  ('charset_normalizer.version',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\charset_normalizer\\version.py',
+   'PYMODULE'),
   ('cmd',
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\cmd.py',
@@ -710,6 +758,10 @@
   ('concurrent.interpreters._queues',
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\concurrent\\interpreters\\_queues.py',
+   'PYMODULE'),
+  ('configparser',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\configparser.py',
    'PYMODULE'),
   ('contextlib',
    'C:\\Users\\NAYEM '
@@ -1035,9 +1087,37 @@
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\http\\cookiejar.py',
    'PYMODULE'),
+  ('http.cookies',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\http\\cookies.py',
+   'PYMODULE'),
   ('http.server',
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\http\\server.py',
+   'PYMODULE'),
+  ('idna',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\idna\\__init__.py',
+   'PYMODULE'),
+  ('idna.core',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\idna\\core.py',
+   'PYMODULE'),
+  ('idna.idnadata',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\idna\\idnadata.py',
+   'PYMODULE'),
+  ('idna.intranges',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\idna\\intranges.py',
+   'PYMODULE'),
+  ('idna.package_data',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\idna\\package_data.py',
+   'PYMODULE'),
+  ('idna.uts46data',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\idna\\uts46data.py',
    'PYMODULE'),
   ('importlib',
    'C:\\Users\\NAYEM '
@@ -2240,6 +2320,62 @@
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\__init__.py',
    'PYMODULE'),
+  ('packaging._elffile',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\_elffile.py',
+   'PYMODULE'),
+  ('packaging._manylinux',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\_manylinux.py',
+   'PYMODULE'),
+  ('packaging._musllinux',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\_musllinux.py',
+   'PYMODULE'),
+  ('packaging._parser',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\_parser.py',
+   'PYMODULE'),
+  ('packaging._ranges',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\_ranges.py',
+   'PYMODULE'),
+  ('packaging._tokenizer',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\_tokenizer.py',
+   'PYMODULE'),
+  ('packaging.licenses',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\licenses\\__init__.py',
+   'PYMODULE'),
+  ('packaging.licenses._spdx',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\licenses\\_spdx.py',
+   'PYMODULE'),
+  ('packaging.markers',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\markers.py',
+   'PYMODULE'),
+  ('packaging.ranges',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\ranges.py',
+   'PYMODULE'),
+  ('packaging.requirements',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\requirements.py',
+   'PYMODULE'),
+  ('packaging.specifiers',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\specifiers.py',
+   'PYMODULE'),
+  ('packaging.tags',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\tags.py',
+   'PYMODULE'),
+  ('packaging.utils',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\utils.py',
+   'PYMODULE'),
   ('packaging.version',
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\version.py',
@@ -2372,6 +2508,78 @@
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\random.py',
    'PYMODULE'),
+  ('requests',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\__init__.py',
+   'PYMODULE'),
+  ('requests.__version__',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\__version__.py',
+   'PYMODULE'),
+  ('requests._internal_utils',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\_internal_utils.py',
+   'PYMODULE'),
+  ('requests._types',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\_types.py',
+   'PYMODULE'),
+  ('requests.adapters',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\adapters.py',
+   'PYMODULE'),
+  ('requests.api',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\api.py',
+   'PYMODULE'),
+  ('requests.auth',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\auth.py',
+   'PYMODULE'),
+  ('requests.certs',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\certs.py',
+   'PYMODULE'),
+  ('requests.compat',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\compat.py',
+   'PYMODULE'),
+  ('requests.cookies',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\cookies.py',
+   'PYMODULE'),
+  ('requests.exceptions',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\exceptions.py',
+   'PYMODULE'),
+  ('requests.hooks',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\hooks.py',
+   'PYMODULE'),
+  ('requests.models',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\models.py',
+   'PYMODULE'),
+  ('requests.packages',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\packages.py',
+   'PYMODULE'),
+  ('requests.sessions',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\sessions.py',
+   'PYMODULE'),
+  ('requests.status_codes',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\status_codes.py',
+   'PYMODULE'),
+  ('requests.structures',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\structures.py',
+   'PYMODULE'),
+  ('requests.utils',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\requests\\utils.py',
+   'PYMODULE'),
   ('rlcompleter',
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\rlcompleter.py',
@@ -2387,6 +2595,515 @@
   ('selectors',
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\selectors.py',
+   'PYMODULE'),
+  ('setuptools',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._core_metadata',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_core_metadata.py',
+   'PYMODULE'),
+  ('setuptools._discovery',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_discovery.py',
+   'PYMODULE'),
+  ('setuptools._distutils',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._distutils._dataclass',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\_dataclass.py',
+   'PYMODULE'),
+  ('setuptools._distutils._log',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\_log.py',
+   'PYMODULE'),
+  ('setuptools._distutils._modified',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\_modified.py',
+   'PYMODULE'),
+  ('setuptools._distutils._msvccompiler',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\_msvccompiler.py',
+   'PYMODULE'),
+  ('setuptools._distutils.archive_util',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\archive_util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.ccompiler',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\ccompiler.py',
+   'PYMODULE'),
+  ('setuptools._distutils.cmd',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\cmd.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\command\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command.bdist',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\command\\bdist.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command.build',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\command\\build.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command.build_ext',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\command\\build_ext.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command.sdist',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\command\\sdist.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compat',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compat\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compat.numpy',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compat\\numpy.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compat.py310',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compat\\py310.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers', '-', 'PYMODULE'),
+  ('setuptools._distutils.compilers.C', '-', 'PYMODULE'),
+  ('setuptools._distutils.compilers.C.base',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\base.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.C.cygwin',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\cygwin.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.C.errors',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\errors.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.C.msvc',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\msvc.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.C.unix',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\unix.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.C.zos',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\zos.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers._modified',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\_modified.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers._util',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\_util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.errors',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\errors.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.logging',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\logging.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.platform', '-', 'PYMODULE'),
+  ('setuptools._distutils.compilers.platform.detect',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\platform\\detect.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.platform.macos',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\platform\\macos.py',
+   'PYMODULE'),
+  ('setuptools._distutils.core',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\core.py',
+   'PYMODULE'),
+  ('setuptools._distutils.debug',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\debug.py',
+   'PYMODULE'),
+  ('setuptools._distutils.dir_util',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\dir_util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.dist',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\dist.py',
+   'PYMODULE'),
+  ('setuptools._distutils.errors',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\errors.py',
+   'PYMODULE'),
+  ('setuptools._distutils.extension',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\extension.py',
+   'PYMODULE'),
+  ('setuptools._distutils.fancy_getopt',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\fancy_getopt.py',
+   'PYMODULE'),
+  ('setuptools._distutils.file_util',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\file_util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.filelist',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\filelist.py',
+   'PYMODULE'),
+  ('setuptools._distutils.log',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\log.py',
+   'PYMODULE'),
+  ('setuptools._distutils.spawn',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\spawn.py',
+   'PYMODULE'),
+  ('setuptools._distutils.sysconfig',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\sysconfig.py',
+   'PYMODULE'),
+  ('setuptools._distutils.text_file',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\text_file.py',
+   'PYMODULE'),
+  ('setuptools._distutils.util',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.version',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\version.py',
+   'PYMODULE'),
+  ('setuptools._distutils.versionpredicate',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\versionpredicate.py',
+   'PYMODULE'),
+  ('setuptools._entry_points',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_entry_points.py',
+   'PYMODULE'),
+  ('setuptools._imp',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_imp.py',
+   'PYMODULE'),
+  ('setuptools._importlib',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_importlib.py',
+   'PYMODULE'),
+  ('setuptools._itertools',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_itertools.py',
+   'PYMODULE'),
+  ('setuptools._normalization',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_normalization.py',
+   'PYMODULE'),
+  ('setuptools._path',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_path.py',
+   'PYMODULE'),
+  ('setuptools._reqs',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_reqs.py',
+   'PYMODULE'),
+  ('setuptools._shutil',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_shutil.py',
+   'PYMODULE'),
+  ('setuptools._static',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_static.py',
+   'PYMODULE'),
+  ('setuptools._vendor', '-', 'PYMODULE'),
+  ('setuptools._vendor.backports',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\backports\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.backports.tarfile',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\backports\\tarfile\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.backports.tarfile.compat',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\backports\\tarfile\\compat\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.backports.tarfile.compat.py38',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\backports\\tarfile\\compat\\py38.py',
+   'PYMODULE'),
+  ('setuptools._vendor.jaraco', '-', 'PYMODULE'),
+  ('setuptools._vendor.jaraco.context',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\jaraco\\context\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.jaraco.functools',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\jaraco\\functools\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.jaraco.text',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\jaraco\\text\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.more_itertools',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\more_itertools\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.more_itertools.more',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\more_itertools\\more.py',
+   'PYMODULE'),
+  ('setuptools._vendor.more_itertools.recipes',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\more_itertools\\recipes.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._elffile',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_elffile.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._manylinux',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_manylinux.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._musllinux',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_musllinux.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._parser',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_parser.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._ranges',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_ranges.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._tokenizer',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_tokenizer.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.markers',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\markers.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.ranges',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\ranges.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.requirements',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\requirements.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.specifiers',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\specifiers.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.tags',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\tags.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.utils',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\utils.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.version',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\version.py',
+   'PYMODULE'),
+  ('setuptools._vendor.tomli',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\tomli\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.tomli._parser',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\tomli\\_parser.py',
+   'PYMODULE'),
+  ('setuptools._vendor.tomli._re',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\tomli\\_re.py',
+   'PYMODULE'),
+  ('setuptools._vendor.tomli._types',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\tomli\\_types.py',
+   'PYMODULE'),
+  ('setuptools._vendor.wheel',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\wheel\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.wheel.macosx_libfile',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\wheel\\macosx_libfile.py',
+   'PYMODULE'),
+  ('setuptools._vendor.wheel.wheelfile',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\wheel\\wheelfile.py',
+   'PYMODULE'),
+  ('setuptools.archive_util',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\archive_util.py',
+   'PYMODULE'),
+  ('setuptools.command',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\__init__.py',
+   'PYMODULE'),
+  ('setuptools.command._requirestxt',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\_requirestxt.py',
+   'PYMODULE'),
+  ('setuptools.command.bdist_egg',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\bdist_egg.py',
+   'PYMODULE'),
+  ('setuptools.command.bdist_wheel',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\bdist_wheel.py',
+   'PYMODULE'),
+  ('setuptools.command.build',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\build.py',
+   'PYMODULE'),
+  ('setuptools.command.egg_info',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\egg_info.py',
+   'PYMODULE'),
+  ('setuptools.command.sdist',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\sdist.py',
+   'PYMODULE'),
+  ('setuptools.command.setopt',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\setopt.py',
+   'PYMODULE'),
+  ('setuptools.compat',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\compat\\__init__.py',
+   'PYMODULE'),
+  ('setuptools.compat.py310',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\compat\\py310.py',
+   'PYMODULE'),
+  ('setuptools.compat.py311',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\compat\\py311.py',
+   'PYMODULE'),
+  ('setuptools.compat.py39',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\compat\\py39.py',
+   'PYMODULE'),
+  ('setuptools.config',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\__init__.py',
+   'PYMODULE'),
+  ('setuptools.config._apply_pyprojecttoml',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_apply_pyprojecttoml.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\__init__.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.error_reporting',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\error_reporting.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.extra_validations',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\extra_validations.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.fastjsonschema_exceptions',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\fastjsonschema_exceptions.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.fastjsonschema_validations',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\fastjsonschema_validations.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.formats',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\formats.py',
+   'PYMODULE'),
+  ('setuptools.config.expand',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\expand.py',
+   'PYMODULE'),
+  ('setuptools.config.pyprojecttoml',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\pyprojecttoml.py',
+   'PYMODULE'),
+  ('setuptools.config.setupcfg',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\setupcfg.py',
+   'PYMODULE'),
+  ('setuptools.depends',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\depends.py',
+   'PYMODULE'),
+  ('setuptools.discovery',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\discovery.py',
+   'PYMODULE'),
+  ('setuptools.dist',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\dist.py',
+   'PYMODULE'),
+  ('setuptools.errors',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\errors.py',
+   'PYMODULE'),
+  ('setuptools.extension',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\extension.py',
+   'PYMODULE'),
+  ('setuptools.glob',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\glob.py',
+   'PYMODULE'),
+  ('setuptools.installer',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\installer.py',
+   'PYMODULE'),
+  ('setuptools.logging',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\logging.py',
+   'PYMODULE'),
+  ('setuptools.monkey',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\monkey.py',
+   'PYMODULE'),
+  ('setuptools.msvc',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\msvc.py',
+   'PYMODULE'),
+  ('setuptools.unicode_utils',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\unicode_utils.py',
+   'PYMODULE'),
+  ('setuptools.version',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\version.py',
+   'PYMODULE'),
+  ('setuptools.warnings',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\warnings.py',
+   'PYMODULE'),
+  ('setuptools.wheel',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\wheel.py',
+   'PYMODULE'),
+  ('setuptools.windows_support',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\windows_support.py',
    'PYMODULE'),
   ('shlex',
    'C:\\Users\\NAYEM '
@@ -2464,6 +3181,10 @@
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tkinter\\__init__.py',
    'PYMODULE'),
+  ('tkinter.colorchooser',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tkinter\\colorchooser.py',
+   'PYMODULE'),
   ('tkinter.commondialog',
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tkinter\\commondialog.py',
@@ -2503,6 +3224,22 @@
   ('tokenize',
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tokenize.py',
+   'PYMODULE'),
+  ('tomllib',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tomllib\\__init__.py',
+   'PYMODULE'),
+  ('tomllib._parser',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tomllib\\_parser.py',
+   'PYMODULE'),
+  ('tomllib._re',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tomllib\\_re.py',
+   'PYMODULE'),
+  ('tomllib._types',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tomllib\\_types.py',
    'PYMODULE'),
   ('tracemalloc',
    'C:\\Users\\NAYEM '
@@ -2667,6 +3404,150 @@
   ('urllib.response',
    'C:\\Users\\NAYEM '
    'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\urllib\\response.py',
+   'PYMODULE'),
+  ('urllib3',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\__init__.py',
+   'PYMODULE'),
+  ('urllib3._base_connection',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\_base_connection.py',
+   'PYMODULE'),
+  ('urllib3._collections',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\_collections.py',
+   'PYMODULE'),
+  ('urllib3._request_methods',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\_request_methods.py',
+   'PYMODULE'),
+  ('urllib3._version',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\_version.py',
+   'PYMODULE'),
+  ('urllib3.connection',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\connection.py',
+   'PYMODULE'),
+  ('urllib3.connectionpool',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\connectionpool.py',
+   'PYMODULE'),
+  ('urllib3.contrib',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\contrib\\__init__.py',
+   'PYMODULE'),
+  ('urllib3.contrib.emscripten',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\contrib\\emscripten\\__init__.py',
+   'PYMODULE'),
+  ('urllib3.contrib.emscripten.connection',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\contrib\\emscripten\\connection.py',
+   'PYMODULE'),
+  ('urllib3.contrib.emscripten.fetch',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\contrib\\emscripten\\fetch.py',
+   'PYMODULE'),
+  ('urllib3.contrib.emscripten.request',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\contrib\\emscripten\\request.py',
+   'PYMODULE'),
+  ('urllib3.contrib.emscripten.response',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\contrib\\emscripten\\response.py',
+   'PYMODULE'),
+  ('urllib3.contrib.pyopenssl',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\contrib\\pyopenssl.py',
+   'PYMODULE'),
+  ('urllib3.contrib.socks',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\contrib\\socks.py',
+   'PYMODULE'),
+  ('urllib3.exceptions',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\exceptions.py',
+   'PYMODULE'),
+  ('urllib3.fields',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\fields.py',
+   'PYMODULE'),
+  ('urllib3.filepost',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\filepost.py',
+   'PYMODULE'),
+  ('urllib3.http2',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\http2\\__init__.py',
+   'PYMODULE'),
+  ('urllib3.http2.connection',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\http2\\connection.py',
+   'PYMODULE'),
+  ('urllib3.http2.probe',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\http2\\probe.py',
+   'PYMODULE'),
+  ('urllib3.poolmanager',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\poolmanager.py',
+   'PYMODULE'),
+  ('urllib3.response',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\response.py',
+   'PYMODULE'),
+  ('urllib3.util',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\__init__.py',
+   'PYMODULE'),
+  ('urllib3.util.connection',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\connection.py',
+   'PYMODULE'),
+  ('urllib3.util.proxy',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\proxy.py',
+   'PYMODULE'),
+  ('urllib3.util.request',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\request.py',
+   'PYMODULE'),
+  ('urllib3.util.response',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\response.py',
+   'PYMODULE'),
+  ('urllib3.util.retry',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\retry.py',
+   'PYMODULE'),
+  ('urllib3.util.ssl_',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\ssl_.py',
+   'PYMODULE'),
+  ('urllib3.util.ssl_match_hostname',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\ssl_match_hostname.py',
+   'PYMODULE'),
+  ('urllib3.util.ssltransport',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\ssltransport.py',
+   'PYMODULE'),
+  ('urllib3.util.timeout',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\timeout.py',
+   'PYMODULE'),
+  ('urllib3.util.url',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\url.py',
+   'PYMODULE'),
+  ('urllib3.util.util',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\util.py',
+   'PYMODULE'),
+  ('urllib3.util.wait',
+   'C:\\Users\\NAYEM '
+   'HASAN\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\urllib3\\util\\wait.py',
    'PYMODULE'),
   ('uuid',
    'C:\\Users\\NAYEM '
