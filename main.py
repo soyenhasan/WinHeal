@@ -1,660 +1,927 @@
+"""WinHeal - Windows system care tool. SAFE VERSION"""
+import datetime
+import hashlib
 import os
+import queue
 import shutil
-import psutil
 import socket
 import subprocess
-import ctypes
-import datetime
+import tempfile
 import threading
+import time
+from collections import defaultdict
+
+import psutil
 import tkinter as tk
-from tkinter import messagebox, ttk, filedialog, colorchooser
+from tkinter import ttk, messagebox, filedialog, colorchooser
+
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+
+try:
+    import winreg
+except ImportError:
+    winreg = None
+
+VERSION = "0.1.1 - SAFE"
+IS_WIN = os.name == "nt"
+NO_WINDOW = 0x08000000 if IS_WIN else 0
+LOG_DIR = os.path.join(os.path.expanduser("~"), "WinHealLogs")
+HIST = 30
+
+STRINGS = {
+    "en": {
+        "app_title": "WinHeal - System Care Tool",
+        "menu_diag": "System Diagnostics",
+        "menu_files": "File & Drive Explorer",
+        "menu_net": "Network Troubleshooter",
+        "menu_startup": "Startup Programs",
+        "menu_dups": "Duplicate File Finder",
+        "menu_updates": "Software Updates",
+        "menu_junk": "Junk File Cleaner",
+        "menu_bin": "Empty Recycle Bin",
+        "menu_bench": "Quick Benchmark",
+        "menu_report": "Export System Report",
+        "theme": "THEME", "language": "LANGUAGE", "custom": "Custom", "quit": "Quit",
+        "dashboard": "SYSTEM DASHBOARD",
+        "status_ok": "● System load: normal",
+        "status_warn": "● System load: high",
+        "cpu": "CPU", "ram": "MEMORY", "disk": "DISK", "battery": "BATTERY",
+        "no_battery": "No battery", "charging": "Plugged in", "on_battery": "On battery",
+        "graph_title": "Live CPU & memory", "log_title": "Activity log",
+        "close": "Close", "working": "Working...", "error": "Error",
+        "windows_only": "This feature works on Windows only.",
+        "threads": "threads", "free": "free", "started": "WinHeal started.",
+        "issue_cpu": "CPU usage is very high. Close heavy programs.",
+        "issue_ram": "Memory usage is very high. Close unused programs or restart.",
+        "issue_disk": "Disk is almost full. Use the Junk Cleaner or Duplicate Finder.",
+        "issue_battery": "Battery is low and not charging.",
+        "issue_uptime": "The PC has not restarted for {d} days. A restart can help.",
+        "no_issues": "No problems found. Your system looks healthy.",
+        "found_issues": "Possible problems:",
+        "top_procs": "Top memory users:",
+        "uptime": "Uptime",
+        "host": "Computer name", "local_ip": "Local IP", "sent": "Data sent",
+        "received": "Data received", "ping_test": "Internet ping (8.8.8.8)",
+        "dns_test": "DNS lookup (example.com)", "ok": "OK", "failed": "FAILED",
+        "net_ok": "Result: connection looks healthy.",
+        "net_dns": "Result: internet reachable but DNS fails. Try 'Flush DNS cache' or change DNS server.",
+        "net_down": "Result: no internet. Check Wi-Fi/cable, router, and restart the router.",
+        "flush_dns": "Flush DNS cache", "dns_flushed": "DNS cache flushed.",
+        "startup_none": "No startup entries found.",
+        "startup_note": "WinHeal only lists these. To disable one, use Task Manager > Startup apps.",
+        "open_startup": "Open Startup settings",
+        "junk_found": "Found {n} temp files older than 24 hours, total {size}.",
+        "junk_none": "No old temp files to clean.",
+        "delete_now": "Delete these files",
+        "confirm_delete": "Delete {n} files ({size})?\nOnly temp files older than 24 hours are removed.",
+        "junk_done": "Deleted {n} files, freed {size}. {f} files were in use/protected and skipped.",
+        "bin_confirm": "Permanently empty the Recycle Bin? This cannot be undone.",
+        "bin_done": "Recycle Bin emptied.",
+        "dups_pick": "Choose a folder to scan for duplicates",
+        "dups_scanning": "Scanning {folder} ...",
+        "dups_none": "No duplicate files found (files under 1 KB are ignored).",
+        "dups_summary": "{g} groups of identical files. Recoverable space: {size}.",
+        "dups_note": "WinHeal deletes nothing. Review the list and remove copies yourself.",
+        "wg_missing": "winget was not found. Install 'App Installer' from the Microsoft Store.",
+        "wg_hint": "To update everything, run in a terminal: winget upgrade --all",
+        "bench_cpu": "CPU test time: {s:.2f} s (lower is faster)",
+        "bench_disk": "Disk write speed: {mb:.0f} MB/s",
+        "bench_note": "Simple indicative tests. Not comparable with professional benchmarks.",
+        "report_saved": "Report saved: {path}",
+        "parent_dir": "[..] Parent folder", "col_name": "Name", "col_type": "Type",
+        "col_size": "Size", "folder": "Folder", "file": "File", "home": "Home",
+        "browse": "Browse...", "copy_ask": "Copy '{name}' to another folder?",
+        "copy_done": "Copied to: {dest}", "path": "Path",
+    },
+    "bn": {
+        "app_title": "WinHeal - সিস্টেম কেয়ার টুল",
+        "menu_diag": "সিস্টেম ডায়াগনস্টিক",
+        "menu_files": "ফাইল ও ড্রাইভ এক্সপ্লোরার",
+        "menu_net": "নেটওয়ার্ক সমস্যা সমাধান",
+        "menu_startup": "স্টার্টআপ প্রোগ্রাম",
+        "menu_dups": "ডুপ্লিকেট ফাইল খোঁজা",
+        "menu_updates": "সফটওয়্যার আপডেট",
+        "menu_junk": "জাঙ্ক ফাইল ক্লিনার",
+        "menu_bin": "রিসাইকেল বিন খালি করা",
+        "menu_bench": "দ্রুত বেঞ্চমার্ক",
+        "menu_report": "সিস্টেম রিপোর্ট সেভ",
+        "theme": "থিম", "language": "ভাষা", "custom": "কাস্টম", "quit": "বন্ধ করুন",
+        "dashboard": "সিস্টেম ড্যাশবোর্ড",
+        "status_ok": "● সিস্টেম লোড: স্বাভাবিক",
+        "status_warn": "● সিস্টেম লোড: বেশি",
+        "cpu": "CPU", "ram": "মেমোরি", "disk": "ডিস্ক", "battery": "ব্যাটারি",
+        "no_battery": "ব্যাটারি নেই", "charging": "চার্জে আছে", "on_battery": "ব্যাটারিতে চলছে",
+        "graph_title": "লাইভ CPU ও মেমোরি", "log_title": "কাজের লগ",
+        "close": "বন্ধ", "working": "কাজ চলছে...", "error": "ত্রুটি",
+        "windows_only": "এই ফিচার শুধু Windows-এ চলে।",
+        "threads": "থ্রেড", "free": "খালি", "started": "WinHeal চালু হয়েছে।",
+        "issue_cpu": "CPU ব্যবহার খুব বেশি। ভারী প্রোগ্রাম বন্ধ করুন।",
+        "issue_ram": "মেমোরি ব্যবহার খুব বেশি। অপ্রয়োজনীয় প্রোগ্রাম বন্ধ করুন বা রিস্টার্ট দিন।",
+        "issue_disk": "ডিস্ক প্রায় ভরে গেছে। জাঙ্ক ক্লিনার বা ডুপ্লিকেট ফাইন্ডার ব্যবহার করুন।",
+        "issue_battery": "ব্যাটারি কম এবং চার্জ হচ্ছে না।",
+        "issue_uptime": "কম্পিউটার {d} দিন ধরে রিস্টার্ট হয়নি। রিস্টার্ট দিলে উপকার হতে পারে।",
+        "no_issues": "কোনো সমস্যা পাওয়া যায়নি। সিস্টেম ভালো আছে।",
+        "found_issues": "সম্ভাব্য সমস্যা:",
+        "top_procs": "সবচেয়ে বেশি মেমোরি ব্যবহার করছে:",
+        "uptime": "চালু আছে",
+        "host": "কম্পিউটারের নাম", "local_ip": "লোকাল IP", "sent": "পাঠানো ডেটা",
+        "received": "পাওয়া ডেটা", "ping_test": "ইন্টারনেট পিং (8.8.8.8)",
+        "dns_test": "DNS লুকআপ (example.com)", "ok": "ঠিক আছে", "failed": "ব্যর্থ",
+        "net_ok": "ফলাফল: সংযোগ ঠিক আছে।",
+        "net_dns": "ফলাফল: ইন্টারনেট আছে কিন্তু DNS কাজ করছে না। 'DNS ক্যাশ পরিষ্কার' চাপুন বা DNS সার্ভার বদলান।",
+        "net_down": "ফলাফল: ইন্টারনেট নেই। ওয়াই-ফাই/ক্যাবল ও রাউটার দেখুন, রাউটার রিস্টার্ট দিন।",
+        "flush_dns": "DNS ক্যাশ পরিষ্কার", "dns_flushed": "DNS ক্যাশ পরিষ্কার হয়েছে।",
+        "startup_none": "কোনো স্টার্টআপ এন্ট্রি পাওয়া যায়নি।",
+        "startup_note": "WinHeal শুধু তালিকা দেখায়। বন্ধ করতে Task Manager > Startup apps ব্যবহার করুন।",
+        "open_startup": "স্টার্টআপ সেটিংস খুলুন",
+        "junk_found": "২৪ ঘণ্টার পুরনো {n}টি টেম্প ফাইল পাওয়া গেছে, মোট {size}।",
+        "junk_none": "পরিষ্কার করার মতো পুরনো টেম্প ফাইল নেই।",
+        "delete_now": "ফাইলগুলো মুছুন",
+        "confirm_delete": "{n}টি ফাইল ({size}) মুছবেন?\nশুধু ২৪ ঘণ্টার পুরনো টেম্প ফাইল মোছা হবে।",
+        "junk_done": "{n}টি ফাইল মুছে {size} জায়গা খালি হয়েছে। {f}টি ফাইল ব্যবহারে ছিল বলে বাদ গেছে।",
+        "bin_confirm": "রিসাইকেল বিন স্থায়ীভাবে খালি করবেন? এটা ফেরানো যাবে না।",
+        "bin_done": "রিসাইকেল বিন খালি হয়েছে।",
+        "dups_pick": "ডুপ্লিকেট খোঁজার জন্য ফোল্ডার বেছে নিন",
+        "dups_scanning": "{folder} স্ক্যান হচ্ছে ...",
+        "dups_none": "কোনো ডুপ্লিকেট ফাইল পাওয়া যায়নি (১ KB-এর ছোট ফাইল বাদ)।",
+        "dups_summary": "{g} গ্রুপ একই ফাইল। বাঁচানো যাবে: {size}।",
+        "dups_note": "WinHeal কিছুই মোছে না। তালিকা দেখে নিজে কপি মুছুন।",
+        "wg_missing": "winget পাওয়া যায়নি। Microsoft Store থেকে 'App Installer' ইনস্টল করুন।",
+        "wg_hint": "সব আপডেট করতে টার্মিনালে চালান: winget upgrade --all",
+        "bench_cpu": "CPU টেস্টের সময়: {s:.2f} সেকেন্ড (কম মানে দ্রুত)",
+        "bench_disk": "ডিস্ক লেখার গতি: {mb:.0f} MB/s",
+        "bench_note": "এটা সহজ আনুমানিক টেস্ট, পেশাদার বেঞ্চমার্কের সঙ্গে তুলনীয় নয়।",
+        "report_saved": "রিপোর্ট সেভ হয়েছে: {path}",
+        "parent_dir": "[..] উপরের ফোল্ডার", "col_name": "নাম", "col_type": "ধরন",
+        "col_size": "সাইজ", "folder": "ফোল্ডার", "file": "ফাইল", "home": "হোম",
+        "browse": "বেছে নিন...", "copy_ask": "'{name}' অন্য ফোল্ডারে কপি করবেন?",
+        "copy_done": "কপি হয়েছে: {dest}", "path": "পাথ",
+    },
+}
+
+def fmt_size(n):
+    n = float(n)
+    for unit in ("B", "KB", "MB", "GB", "TB"):
+        if n < 1024 or unit == "TB":
+            return f"{n:.0f} {unit}" if unit == "B" else f"{n:.2f} {unit}"
+        n /= 1024
+
+def run_cmd(cmd, timeout=60):
+    try:
+        p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8",
+                           errors="replace", timeout=timeout, creationflags=NO_WINDOW)
+        return p.returncode, (p.stdout or "") + (p.stderr or "")
+    except (OSError, subprocess.SubprocessError) as e:
+        return -1, str(e)
+
+def local_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))
+        return s.getsockname()[0]
+    except OSError:
+        return "N/A"
+    finally:
+        s.close()
+
+def ping_ok(host="8.8.8.8"):
+    cmd = ["ping", "-n", "2", "-w", "2000", host] if IS_WIN else ["ping", "-c", "2", "-W", "2", host]
+    rc, out = run_cmd(cmd, timeout=15)
+    return rc == 0 and ("ttl" in out.lower())
+
+def dns_ok(name="example.com"):
+    try:
+        socket.gethostbyname(name)
+        return True
+    except OSError:
+        return False
+
+def get_battery():
+    try:
+        return psutil.sensors_battery()
+    except (AttributeError, NotImplementedError):
+        return None
+
+def junk_dirs():
+    # FIXED: Added safety check
+    cands = [os.environ.get("TEMP"), os.environ.get("TMP")]
+    root = os.environ.get("SystemRoot")
+    if root:
+        cands.append(os.path.join(root, "Temp"))
+    out, seen = [], set()
+    for c in cands:
+        if not c or not os.path.isdir(c):
+            continue
+        norm = os.path.normcase(c)
+        if norm in seen:
+            continue
+        # SAFETY: must contain "temp" and be longer than 10 chars
+        if "temp" not in norm.lower() or len(norm) < 10:
+            continue
+        seen.add(norm)
+        out.append(c)
+    return out
+
+# ... বাকি সব ফাংশন আগের মতোই থাকবে ...
+# scan_junk, delete_files, file_hash, find_duplicates, cpu_bench, disk_write_bench, startup_entries আগের মতো
+def scan_junk(dirs=None, min_age_hours=24):
+    cutoff = time.time() - min_age_hours * 3600
+    files, total = [], 0
+    for d in (dirs if dirs is not None else junk_dirs()):
+        for root, _, names in os.walk(d):
+            for n in names:
+                fp = os.path.join(root, n)
+                try:
+                    st = os.lstat(fp)
+                except OSError:
+                    continue
+                if st.st_mtime < cutoff:
+                    files.append((fp, st.st_size))
+                    total += st.st_size
+    return files, total
+
+def delete_files(files):
+    deleted = freed = failed = 0
+    for fp, size in files:
+        try:
+            os.remove(fp)
+            deleted += 1
+            freed += size
+        except OSError:
+            failed += 1
+    return deleted, freed, failed
+
+def file_hash(path):
+    h = hashlib.sha256()
+    try:
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(1024 * 1024), b""):
+                h.update(chunk)
+    except OSError:
+        return None
+    return h.hexdigest()
+
+def find_duplicates(folder, cancel=None):
+    by_size = defaultdict(list)
+    seen = 0
+    for root, _, names in os.walk(folder):
+        if cancel is not None and cancel.is_set():
+            return None
+        for n in names:
+            fp = os.path.join(root, n)
+            try:
+                if os.path.islink(fp):
+                    continue
+                size = os.path.getsize(fp)
+            except OSError:
+                continue
+            seen += 1
+            if size >= 1024:
+                by_size[size].append(fp)
+    groups = []
+    for size, paths in by_size.items():
+        if len(paths) < 2:
+            continue
+        by_hash = defaultdict(list)
+        for fp in paths:
+            if cancel is not None and cancel.is_set():
+                return None
+            h = file_hash(fp)
+            if h:
+                by_hash[h].append(fp)
+        groups.extend((size, ps) for ps in by_hash.values() if len(ps) > 1)
+    groups.sort(key=lambda g: g[0] * (len(g[1]) - 1), reverse=True)
+    return groups, seen
+
+def cpu_bench():
+    start = time.perf_counter()
+    x = 0
+    for i in range(5_000_000):
+        x += i * i % 7
+    return time.perf_counter() - start
+
+def disk_write_bench(size_mb=64):
+    path = os.path.join(tempfile.gettempdir(), "winheal_bench.tmp")
+    block = os.urandom(1024 * 1024)
+    start = time.perf_counter()
+    try:
+        with open(path, "wb") as f:
+            for _ in range(size_mb):
+                f.write(block)
+            f.flush()
+            os.fsync(f.fileno())
+        elapsed = time.perf_counter() - start
+    finally:
+        try:
+            os.remove(path)
+        except OSError:
+            pass
+    return size_mb / elapsed
+
+def startup_entries():
+    items = []
+    if winreg is None:
+        return items
+    for hive, scope in ((winreg.HKEY_CURRENT_USER, "User"), (winreg.HKEY_LOCAL_MACHINE, "All users")):
+        try:
+            with winreg.OpenKey(hive, r"Software\Microsoft\Windows\CurrentVersion\Run") as k:
+                i = 0
+                while True:
+                    try:
+                        name, value, _ = winreg.EnumValue(k, i)
+                    except OSError:
+                        break
+                    items.append((scope, name, str(value)))
+                    i += 1
+        except OSError:
+            pass
+    return items
 
 class WinHealApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("WinHeal AI 2027 - World's Ultimate Cyber-Neural Suite v12.5")
-        self.root.geometry("1350x850")
-        
-        # Default Theme Colors (Cyber Cyan & Deep Void)
-        self.theme_bg = "#020617"
-        self.card_bg = "#090d16"
-        self.accent_color = "#38bdf8"
-        self.neon_green = "#10b981"
-        
-        self.root.config(bg=self.theme_bg)
+        self.lang = "en"
+        self.bg, self.card = "#020617", "#090d16"
+        self.accent, self.neon = "#38bdf8", "#10b981"
+        self.root_drive = os.path.splitdrive(os.path.expanduser("~"))[0] + os.sep
+        self.cpu_hist = [0] * HIST
+        self.ram_hist = [0] * HIST
+        self.log_lines = []
+        self.main = None
+        self.ui_queue = queue.Queue()
+        root.geometry("1200x760")
+        root.minsize(1000, 650)
+        # FIXED: Admin check
+        if IS_WIN:
+            try:
+                import ctypes
+                if not ctypes.windll.shell32.IsUserAnAdmin():
+                    root.after(500, lambda: messagebox.showwarning("Admin Recommended", "Run as Administrator for full features (Junk Cleaner, Recycle Bin)"))
+            except:
+                pass
+        self.build_ui()
+        self.log(self.t("started"))
+        self.poll_queue()
+        self.update_metrics()
 
-        # Custom Styles for Progressbars & Widgets
-        style = ttk.Style()
-        style.theme_use('clam')
-        style.configure("cyber.Horizontal.TProgressbar", 
-                        troughcolor="#0f172a", 
-                        background=self.neon_green, 
-                        darkcolor=self.neon_green, 
-                        lightcolor="#34d399", 
-                        bordercolor=self.theme_bg)
+    def t(self, key, **kw):
+        s = STRINGS.get(self.lang, {}).get(key) or STRINGS["en"].get(key, key)
+        return s.format(**kw) if kw else s
 
-        # --- MAIN CONTAINER ---
-        self.main_container = tk.Frame(root, bg=self.theme_bg)
-        self.main_container.pack(fill="both", expand=True)
+    def ui(self, fn):
+        self.ui_queue.put(fn)
 
-        # ==========================================
-        # 1. LEFT SIDEBAR (World-Class Control Panel)
-        # ==========================================
-        self.sidebar = tk.Frame(self.main_container, bg=self.card_bg, width=270)
-        self.sidebar.pack(side="left", fill="y")
-        self.sidebar.pack_propagate(False)
-
-        # Brand Header
-        brand_frame = tk.Frame(self.sidebar, bg=self.card_bg)
-        brand_frame.pack(pady=10)
-
-        tk.Label(
-            brand_frame, 
-            text="⚡ WINHEAL AI", 
-            font=("Segoe UI", 13, "bold"), 
-            bg=self.card_bg, 
-            fg=self.accent_color
-        ).pack(anchor="w", padx=15)
-
-        tk.Label(
-            brand_frame, 
-            text="WORLD EDITION v12.5 // ULTIMATE", 
-            font=("Segoe UI", 7, "bold"), 
-            bg=self.card_bg, 
-            fg=self.neon_green
-        ).pack(anchor="w", padx=15)
-
-        # Professional Menu Items
-        menu_items = [
-            ("⚡ Neural AI Diagnostics", lambda: self.run_async_task(self.run_ai_health_check, "AI Diagnostics")),
-            ("📁 Pro File & Drive Matrix", self.open_interactive_file_explorer),
-            ("🌐 Live Network & LAN Troubleshoot", self.open_network_scanner),
-            ("🛡️ Cloud Threat & Malware Scan", lambda: self.run_async_task(self.run_cloud_threat_scan, "Cloud Threat Scan")),
-            ("🚀 Smart Startup & Boot Opt", lambda: self.run_async_task(self.run_startup_manager, "Startup Manager")),
-            ("🧹 Deep Registry Cleaner", lambda: self.run_async_task(self.run_registry_cleaner, "Registry Cleaner")),
-            ("📑 Duplicate File Finder", self.run_duplicate_finder),
-            ("🔄 Software Updater Engine", self.run_software_updater),
-            ("🎮 In-App Gaming FPS & Overlay", self.run_gaming_overlay),
-            ("🤖 AI Troubleshooting Copilot", self.open_ai_copilot),
-            ("🏆 Hardware Benchmark Suite", self.run_hardware_benchmark),
-            ("🎮 Ultimate Hyper-Gaming Boost", lambda: self.run_async_task(self.run_gaming_boost, "Gaming Boost")),
-            ("🚀 One-Click Turbo Boost", lambda: self.run_async_task(self.run_turbo_boost, "Turbo Boost")),
-            ("🧹 Clean System Debris (Junk)", lambda: self.run_async_task(self.run_clean_temp, "System Debris Clean")),
-            ("🗑️ Deep Flush Recycle Bin", self.run_empty_bin),
-            ("📑 Export Elite Health Report", self.export_health_report)
-        ]
-
-        for text, cmd in menu_items:
-            tk.Button(
-                self.sidebar, text=text, command=cmd,
-                bg=self.card_bg, fg="#94a3b8", activebackground="#1e293b", activeforeground=self.accent_color,
-                font=("Segoe UI", 8, "bold"), anchor="w", padx=15, pady=2, relief="flat", cursor="hand2"
-            ).pack(fill="x", pady=1)
-
-        # Theme Switcher & Custom Color Picker Frame in Sidebar
-        theme_box = tk.Frame(self.sidebar, bg=self.card_bg)
-        theme_box.pack(fill="x", padx=15, pady=2)
-        tk.Label(theme_box, text="NEON THEME ENGINE:", font=("Segoe UI", 7, "bold"), bg=self.card_bg, fg="#64748b").pack(anchor="w")
-        
-        t_btn_frame = tk.Frame(theme_box, bg=self.card_bg)
-        t_btn_frame.pack(fill="x", pady=2)
-        tk.Button(t_btn_frame, text="Cyan", command=lambda: self.change_theme("#38bdf8", "#10b981"), bg="#0369a1", fg="white", font=("Segoe UI", 7), relief="flat", width=5).pack(side="left", padx=1)
-        tk.Button(t_btn_frame, text="Green", command=lambda: self.change_theme("#10b981", "#38bdf8"), bg="#064e3b", fg="white", font=("Segoe UI", 7), relief="flat", width=5).pack(side="left", padx=1)
-        tk.Button(t_btn_frame, text="Purple", command=lambda: self.change_theme("#c084fc", "#f43f5e"), bg="#581c87", fg="white", font=("Segoe UI", 7), relief="flat", width=5).pack(side="left", padx=1)
-        tk.Button(t_btn_frame, text="Custom", command=self.pick_custom_theme, bg="#334155", fg="white", font=("Segoe UI", 7), relief="flat", width=6).pack(side="left", padx=1)
-
-        # System Shutdown Button at Bottom
-        tk.Button(
-            self.sidebar, text="🛑 SYSTEM SHUTDOWN", command=root.quit,
-            bg="#180707", fg="#f87171", activebackground="#7f1d1d", activeforeground="white",
-            font=("Segoe UI", 8, "bold"), pady=4, relief="flat", cursor="hand2"
-        ).pack(side="bottom", fill="x", padx=15, pady=5)
-
-        # ==========================================
-        # 2. RIGHT CONTENT AREA (Graphics Dashboard)
-        # ==========================================
-        self.content_area = tk.Frame(self.main_container, bg=self.theme_bg)
-        self.content_area.pack(side="right", fill="both", expand=True, padx=20, pady=15)
-
-        # Top Bar: Status & Title
-        top_bar = tk.Frame(self.content_area, bg=self.theme_bg)
-        top_bar.pack(fill="x", pady=(0, 10))
-
-        self.title_lbl = tk.Label(
-            top_bar, text="WORLD COMMAND CENTER // QUANTUM TELEMETRY MATRIX", 
-            font=("Segoe UI", 11, "bold"), bg=self.theme_bg, fg=self.accent_color
-        )
-        self.title_lbl.pack(side="left")
-
-        self.status_badge = tk.Label(
-            top_bar, text=" ● AI STATUS: ACTIVE & SECURE // 100% OPTIMAL ", 
-            font=("Segoe UI", 8, "bold"), bg="#064e3b", fg="#34d399", padx=10, pady=4
-        )
-        self.status_badge.pack(side="right")
-
-        # --- METRICS CARDS ROW ---
-        cards_row = tk.Frame(self.content_area, bg=self.theme_bg)
-        cards_row.pack(fill="x", pady=5)
-
-        # Card 1: CPU Load
-        self.c1 = tk.Frame(cards_row, bg=self.card_bg, padx=12, pady=10, bd=1, relief="solid")
-        self.c1.pack(side="left", fill="both", expand=True, padx=5)
-        tk.Label(self.c1, text="CPU INTENSITY", font=("Segoe UI", 8, "bold"), bg=self.card_bg, fg="#64748b").pack(anchor="w")
-        self.cpu_val_lbl = tk.Label(self.c1, text="0%", font=("Segoe UI", 18, "bold"), bg=self.card_bg, fg=self.accent_color)
-        self.cpu_val_lbl.pack(anchor="w", pady=2)
-        self.cpu_bar = ttk.Progressbar(self.c1, length=150, mode="determinate", style="cyber.Horizontal.TProgressbar")
-        self.cpu_bar.pack(anchor="w", pady=2)
-
-        # Card 2: Memory Allocation
-        self.c2 = tk.Frame(cards_row, bg=self.card_bg, padx=12, pady=10, bd=1, relief="solid")
-        self.c2.pack(side="left", fill="both", expand=True, padx=5)
-        tk.Label(self.c2, text="MEMORY ALLOCATION", font=("Segoe UI", 8, "bold"), bg=self.card_bg, fg="#64748b").pack(anchor="w")
-        self.ram_val_lbl = tk.Label(self.c2, text="0%", font=("Segoe UI", 18, "bold"), bg=self.card_bg, fg="#c084fc")
-        self.ram_val_lbl.pack(anchor="w", pady=2)
-        self.ram_bar = ttk.Progressbar(self.c2, length=150, mode="determinate", style="cyber.Horizontal.TProgressbar")
-        self.ram_bar.pack(anchor="w", pady=2)
-
-        # Card 3: Thermal & Battery Health
-        self.c3 = tk.Frame(cards_row, bg=self.card_bg, padx=12, pady=10, bd=1, relief="solid")
-        self.c3.pack(side="left", fill="both", expand=True, padx=5)
-        tk.Label(self.c3, text="THERMAL & BATTERY", font=("Segoe UI", 8, "bold"), bg=self.card_bg, fg="#64748b").pack(anchor="w")
-        self.temp_val_lbl = tk.Label(self.c3, text="41°C (Optimal) ⚡", font=("Segoe UI", 15, "bold"), bg=self.card_bg, fg=self.neon_green)
-        self.temp_val_lbl.pack(anchor="w", pady=2)
-        tk.Label(self.c3, text="Power State: AC Connected & Stable", font=("Segoe UI", 7, "italic"), bg=self.card_bg, fg="#94a3b8").pack(anchor="w", pady=4)
-
-        # --- LOWER DUAL SECTION ---
-        lower_grid = tk.Frame(self.content_area, bg=self.theme_bg)
-        lower_grid.pack(fill="both", expand=True, pady=8)
-
-        # Left: Real-time Live Performance Graph
-        graph_frame = tk.Frame(lower_grid, bg=self.card_bg, padx=10, pady=10, bd=1, relief="solid")
-        graph_frame.pack(side="left", fill="both", expand=True, padx=(0, 6))
-
-        tk.Label(graph_frame, text="📊 REAL-TIME QUANTUM TELEMETRY GRAPH", font=("Segoe UI", 9, "bold"), bg=self.card_bg, fg="#cbd5e1").pack(anchor="w", pady=(0, 4))
-        
-        self.fig = Figure(figsize=(4, 2.5), dpi=80)
-        self.fig.patch.set_facecolor('#030712')
-        self.ax = self.fig.add_subplot(111)
-        self.ax.set_facecolor('#030712')
-        self.x_data = list(range(10))
-        self.y_data = [0] * 10
-        self.line, = self.ax.plot(self.x_data, self.y_data, color="#38bdf8", linewidth=2, marker='o', markersize=3)
-        self.ax.set_ylim(0, 100)
-        self.ax.tick_params(colors='white', labelsize=7)
-        for spine in self.ax.spines.values():
-            spine.set_color('#334155')
-        self.fig.tight_layout()
-
-        self.canvas_chart = FigureCanvasTkAgg(self.fig, master=graph_frame)
-        self.canvas_chart.get_tk_widget().pack(fill="both", expand=True)
-
-        # Right: Terminal Log Box & Quick Turbo Action
-        right_panel = tk.Frame(lower_grid, bg=self.theme_bg)
-        right_panel.pack(side="right", fill="both", expand=True, padx=(6, 0))
-
-        term_frame = tk.Frame(right_panel, bg=self.card_bg, padx=10, pady=10, bd=1, relief="solid")
-        term_frame.pack(fill="both", expand=True, pady=(0, 5))
-
-        tk.Label(term_frame, text="⚡ SYSTEM NEURAL LOGS & KERNEL STATUS", font=("Segoe UI", 9, "bold"), bg=self.card_bg, fg="#cbd5e1").pack(anchor="w", pady=(0, 4))
-        
-        self.text_area = tk.Text(
-            term_frame, height=7, width=35, font=("Consolas", 8), 
-            bg="#030712", fg=self.neon_green, bd=0, highlightthickness=0, insertbackground="white"
-        )
-        self.text_area.pack(fill="both", expand=True)
-
-        tk.Button(
-            right_panel, text="🚀 ONE-CLICK TURBO BOOST SYSTEM", command=lambda: self.run_async_task(self.run_turbo_boost, "Turbo Boost"),
-            bg="#064e3b", fg="#34d399", font=("Segoe UI", 9, "bold"), pady=8, relief="flat", cursor="hand2"
-        ).pack(fill="x")
-
-        # Initializing Live Metrics & Startup Logs
-        self.update_live_metrics()
-        self.log_message("=== WINHEAL AI 2027 WORLD EDITION v12.5 INITIALIZED ===")
-        self.log_message("Async Threading, Toast Notifications & Hex Customizer online.\n")
-
-    # ==========================================
-    # LIVE METRICS TELEMETRY UPDATER
-    # ==========================================
-    def update_live_metrics(self):
-        cpu = psutil.cpu_percent()
-        ram = psutil.virtual_memory().percent
-        
-        self.cpu_val_lbl.config(text=f"{cpu}%")
-        self.cpu_bar['value'] = cpu
-        
-        self.ram_val_lbl.config(text=f"{ram}%")
-        self.ram_bar['value'] = ram
-        
-        self.y_data.pop(0)
-        self.y_data.append(cpu)
-        self.ax.clear()
-        self.ax.set_facecolor('#030712')
-        self.ax.plot(self.x_data, self.y_data, color=self.accent_color, linewidth=2, marker='o', markersize=3)
-        self.ax.set_ylim(0, 100)
-        self.ax.tick_params(colors='white', labelsize=7)
-        for spine in self.ax.spines.values():
-            spine.set_color('#334155')
-        self.canvas_chart.draw()
-
-        self.root.after(2000, self.update_live_metrics)
-
-    # ==========================================
-    # ASYNC THREADING RUNNER
-    # ==========================================
-    def run_async_task(self, task_func, task_name):
-        self.log_message(f"⏳ Executing {task_name} in background thread...")
-        threading.Thread(target=task_func, daemon=True).start()
-
-    # ==========================================
-    # SESSION LOG SAVING & TOAST POPUP
-    # ==========================================
-    def log_message(self, message):
-        timestamp = datetime.datetime.now().strftime("[%H:%M:%S]")
-        formatted_msg = f"{timestamp} {message}"
-        self.text_area.insert(tk.END, formatted_msg + "\n")
-        self.text_area.see(tk.END)
-        
+    def poll_queue(self):
         try:
-            log_dir = os.path.expanduser("~/Desktop/WinHealLogs")
-            os.makedirs(log_dir, exist_ok=True)
-            with open(os.path.join(log_dir, "session_history.log"), "a", encoding="utf-8") as lf:
-                lf.write(formatted_msg + "\n")
-        except:
+            while True:
+                self.ui_queue.get_nowait()()
+        except queue.Empty:
+            pass
+        except tk.TclError:
+            pass
+        self.root.after(100, self.poll_queue)
+
+    def run_bg(self, fn, *args):
+        def runner():
+            try:
+                fn(*args)
+            except Exception as e:
+                self.log(f"ERROR: {e}")
+        threading.Thread(target=runner, daemon=True).start()
+
+    def log(self, message):
+        line = f"[{datetime.datetime.now():%H:%M:%S}] {message}"
+        self.log_lines.append(line)
+        try:
+            os.makedirs(LOG_DIR, exist_ok=True)
+            with open(os.path.join(LOG_DIR, "session_history.log"), "a", encoding="utf-8") as f:
+                f.write(line + "\n")
+        except OSError:
+            pass
+        self.ui(lambda: self._append_log(line))
+
+    def _append_log(self, line):
+        try:
+            self.log_box.insert(tk.END, line + "\n")
+            self.log_box.see(tk.END)
+        except (tk.TclError, AttributeError):
             pass
 
-    def show_toast(self, title, message):
-        toast = tk.Toplevel(self.root)
-        toast.overrideredirect(True)
-        toast.geometry("320x90+1100+50")
-        toast.config(bg=self.card_bg)
-        
-        b_frame = tk.Frame(toast, bg=self.accent_color, padx=2, pady=2)
-        b_frame.pack(fill="both", expand=True)
-        
-        inner = tk.Frame(b_frame, bg=self.card_bg, padx=10, pady=10)
-        inner.pack(fill="both", expand=True)
-        
-        tk.Label(inner, text=f"⚡ {title}", font=("Segoe UI", 9, "bold"), bg=self.card_bg, fg=self.accent_color).pack(anchor="w")
-        tk.Label(inner, text=message, font=("Segoe UI", 8), bg=self.card_bg, fg="#cbd5e1", wraplength=280, justify="left").pack(anchor="w", pady=3)
-        
-        toast.after(3000, toast.destroy)
+    def toast(self, title, message):
+        self.ui(lambda: self._toast(title, message))
 
-    # ==========================================
-    # CUSTOM HEX THEME PICKER
-    # ==========================================
-    def change_theme(self, accent, neon):
-        self.accent_color = accent
-        self.neon_green = neon
-        self.title_lbl.config(fg=self.accent_color)
-        self.log_message(f"🎨 Theme accent switched to {accent}.")
-        self.show_toast("Theme Engine", f"Accent successfully updated to {accent}")
+    def _toast(self, title, message):
+        w = tk.Toplevel(self.root)
+        w.overrideredirect(True)
+        x = self.root.winfo_x() + self.root.winfo_width() - 350
+        y = self.root.winfo_y() + 50
+        w.geometry(f"330x95+{x}+{y}")
+        border = tk.Frame(w, bg=self.accent, padx=2, pady=2)
+        border.pack(fill="both", expand=True)
+        inner = tk.Frame(border, bg=self.card, padx=10, pady=8)
+        inner.pack(fill="both", expand=True)
+        tk.Label(inner, text=f"⚡ {title}", font=("Segoe UI", 9, "bold"), bg=self.card, fg=self.accent).pack(anchor="w")
+        tk.Label(inner, text=message, font=("Segoe UI", 9), bg=self.card, fg="#cbd5e1",
+                 wraplength=300, justify="left").pack(anchor="w", pady=3)
+        w.after(3500, w.destroy)
+
+    def button(self, parent, text, cmd, bg="#0369a1", fg="white"):
+        return tk.Button(parent, text=text, command=cmd, bg=bg, fg=fg, font=("Segoe UI", 9, "bold"),
+                         relief="flat", padx=12, pady=5, cursor="hand2")
+
+    def build_ui(self):
+        # FIXED: close old figure to prevent memory leak
+        if hasattr(self, 'fig'):
+            try:
+                plt.close(self.fig)
+            except:
+                pass
+        if self.main is not None:
+            self.main.destroy()
+        self.root.title(self.t("app_title"))
+        self.root.config(bg=self.bg)
+        style = ttk.Style()
+        style.theme_use("clam")
+        style.configure("cyber.Horizontal.TProgressbar", troughcolor="#0f172a", background=self.neon,
+                        darkcolor=self.neon, lightcolor=self.neon, bordercolor=self.bg)
+        self.main = tk.Frame(self.root, bg=self.bg)
+        self.main.pack(fill="both", expand=True)
+        side = tk.Frame(self.main, bg=self.card, width=260)
+        side.pack(side="left", fill="y")
+        side.pack_propagate(False)
+        tk.Label(side, text="⚡ WINHEAL", font=("Segoe UI", 14, "bold"), bg=self.card,
+                 fg=self.accent).pack(anchor="w", padx=15, pady=(15, 0))
+        tk.Label(side, text=f"v{VERSION}", font=("Segoe UI", 8), bg=self.card,
+                 fg="#64748b").pack(anchor="w", padx=15, pady=(0, 10))
+        menu = [
+            ("menu_diag", self.diagnostics), ("menu_files", self.file_explorer),
+            ("menu_net", self.network), ("menu_startup", self.startup),
+            ("menu_dups", self.duplicates), ("menu_updates", self.updates),
+            ("menu_junk", self.junk), ("menu_bin", self.empty_bin),
+            ("menu_bench", self.benchmark), ("menu_report", self.export_report),
+        ]
+        for key, cmd in menu:
+            tk.Button(side, text=self.t(key), command=cmd, bg=self.card, fg="#cbd5e1",
+                      activebackground="#1e293b", activeforeground=self.accent,
+                      font=("Segoe UI", 10), anchor="w", padx=15, pady=5, relief="flat",
+                      cursor="hand2").pack(fill="x", pady=1)
+        for label_key, items in (
+            ("theme", [("Cyan", ("#38bdf8", "#10b981"), "#0369a1"), ("Green", ("#10b981", "#38bdf8"), "#064e3b"),
+                       ("Purple", ("#c084fc", "#f43f5e"), "#581c87")]),
+        ):
+            box = tk.Frame(side, bg=self.card)
+            box.pack(fill="x", padx=15, pady=(12, 0))
+            tk.Label(box, text=self.t(label_key), font=("Segoe UI", 8, "bold"), bg=self.card,
+                     fg="#64748b").pack(anchor="w")
+            row = tk.Frame(box, bg=self.card)
+            row.pack(fill="x", pady=2)
+            for name, colors, bgc in items:
+                tk.Button(row, text=name, command=lambda c=colors: self.set_theme(*c), bg=bgc, fg="white",
+                          font=("Segoe UI", 8), relief="flat", width=6).pack(side="left", padx=1)
+            tk.Button(row, text=self.t("custom"), command=self.pick_custom_theme, bg="#334155", fg="white",
+                      font=("Segoe UI", 8), relief="flat", width=7).pack(side="left", padx=1)
+        lbox = tk.Frame(side, bg=self.card)
+        lbox.pack(fill="x", padx=15, pady=(12, 0))
+        tk.Label(lbox, text=self.t("language"), font=("Segoe UI", 8, "bold"), bg=self.card,
+                 fg="#64748b").pack(anchor="w")
+        lrow = tk.Frame(lbox, bg=self.card)
+        lrow.pack(fill="x", pady=2)
+        tk.Button(lrow, text="English", command=lambda: self.set_lang("en"), bg="#334155", fg="white",
+                  font=("Segoe UI", 9), relief="flat", width=9).pack(side="left", padx=1)
+        tk.Button(lrow, text="বাংলা", command=lambda: self.set_lang("bn"), bg="#334155", fg="white",
+                  font=("Segoe UI", 9), relief="flat", width=9).pack(side="left", padx=1)
+        tk.Button(side, text=self.t("quit"), command=self.root.destroy, bg="#180707", fg="#f87171",
+                  font=("Segoe UI", 9, "bold"), pady=5, relief="flat",
+                  cursor="hand2").pack(side="bottom", fill="x", padx=15, pady=10)
+        content = tk.Frame(self.main, bg=self.bg)
+        content.pack(side="right", fill="both", expand=True, padx=20, pady=15)
+        top = tk.Frame(content, bg=self.bg)
+        top.pack(fill="x", pady=(0, 10))
+        tk.Label(top, text=self.t("dashboard"), font=("Segoe UI", 12, "bold"), bg=self.bg,
+                 fg=self.accent).pack(side="left")
+        self.status_badge = tk.Label(top, text=self.t("status_ok"), font=("Segoe UI", 9, "bold"),
+                                     bg="#064e3b", fg="#34d399", padx=10, pady=4)
+        self.status_badge.pack(side="right")
+        cards = tk.Frame(content, bg=self.bg)
+        cards.pack(fill="x", pady=5)
+        self.cpu_lbl, self.cpu_bar = self._card(cards, self.t("cpu"), self.accent)
+        self.ram_lbl, self.ram_bar = self._card(cards, self.t("ram"), "#c084fc")
+        self.disk_lbl, self.disk_bar = self._card(cards, self.t("disk"), "#fbbf24")
+        self.bat_lbl, self.bat_bar = self._card(cards, self.t("battery"), self.neon)
+        lower = tk.Frame(content, bg=self.bg)
+        lower.pack(fill="both", expand=True, pady=8)
+        gframe = tk.Frame(lower, bg=self.card, padx=10, pady=10, bd=1, relief="solid")
+        gframe.pack(side="left", fill="both", expand=True, padx=(0, 6))
+        tk.Label(gframe, text=self.t("graph_title"), font=("Segoe UI", 10, "bold"), bg=self.card,
+                 fg="#cbd5e1").pack(anchor="w", pady=(0, 4))
+        self.fig = Figure(figsize=(4, 2.5), dpi=80)
+        self.fig.patch.set_facecolor("#030712")
+        self.ax = self.fig.add_subplot(111)
+        self.ax.set_facecolor("#030712")
+        xs = list(range(HIST))
+        (self.cpu_line,) = self.ax.plot(xs, self.cpu_hist, color=self.accent, linewidth=2, label="CPU")
+        (self.ram_line,) = self.ax.plot(xs, self.ram_hist, color="#c084fc", linewidth=2, label="RAM")
+        self.ax.set_ylim(0, 100)
+        self.ax.set_xlim(0, HIST - 1)
+        self.ax.tick_params(colors="white", labelsize=7)
+        for sp in self.ax.spines.values():
+            sp.set_color("#334155")
+        leg = self.ax.legend(loc="upper left", fontsize=7, facecolor="#030712", edgecolor="#334155")
+        for txt in leg.get_texts():
+            txt.set_color("white")
+        self.fig.tight_layout()
+        self.canvas = FigureCanvasTkAgg(self.fig, master=gframe)
+        self.canvas.get_tk_widget().pack(fill="both", expand=True)
+        lframe = tk.Frame(lower, bg=self.card, padx=10, pady=10, bd=1, relief="solid")
+        lframe.pack(side="right", fill="both", expand=True, padx=(6, 0))
+        tk.Label(lframe, text=self.t("log_title"), font=("Segoe UI", 10, "bold"), bg=self.card,
+                 fg="#cbd5e1").pack(anchor="w", pady=(0, 4))
+        self.log_box = tk.Text(lframe, height=7, width=35, font=("Consolas", 9), bg="#030712",
+                               fg=self.neon, bd=0, highlightthickness=0)
+        self.log_box.pack(fill="both", expand=True)
+        for line in self.log_lines[-200:]:
+            self.log_box.insert(tk.END, line + "\n")
+        self.log_box.see(tk.END)
+
+    def _card(self, parent, title, color):
+        f = tk.Frame(parent, bg=self.card, padx=12, pady=10, bd=1, relief="solid")
+        f.pack(side="left", fill="both", expand=True, padx=5)
+        tk.Label(f, text=title, font=("Segoe UI", 8, "bold"), bg=self.card, fg="#64748b").pack(anchor="w")
+        lbl = tk.Label(f, text="--", font=("Segoe UI", 16, "bold"), bg=self.card, fg=color)
+        lbl.pack(anchor="w", pady=2)
+        bar = ttk.Progressbar(f, length=140, mode="determinate", style="cyber.Horizontal.TProgressbar")
+        bar.pack(anchor="w", pady=2)
+        return lbl, bar
+
+    def set_theme(self, accent, neon):
+        self.accent, self.neon = accent, neon
+        self.build_ui()
 
     def pick_custom_theme(self):
-        color_code = colorchooser.askcolor(title="Choose Custom Cyber Neon Accent")[1]
-        if color_code:
-            self.accent_color = color_code
-            self.title_lbl.config(fg=self.accent_color)
-            self.log_message(f"🎨 Custom Hex Theme applied: {color_code}")
-            self.show_toast("Custom Hex Theme", f"Active Accent: {color_code}")
+        color = colorchooser.askcolor(title="Accent color")[1]
+        if color:
+            self.set_theme(color, self.neon)
 
-    # ==========================================
-    # ALL FEATURES & MODULES
-    # ==========================================
-    def run_duplicate_finder(self):
-        dup_win = tk.Toplevel(self.root)
-        dup_win.title("WinHeal AI - Duplicate File Finder")
-        dup_win.geometry("550x400")
-        dup_win.config(bg=self.theme_bg)
+    def set_lang(self, code):
+        self.lang = code
+        self.build_ui()
 
-        tk.Label(dup_win, text="📑 DUPLICATE FILE & CLUTTER MATRIX", font=("Segoe UI", 11, "bold"), bg=self.theme_bg, fg=self.accent_color).pack(pady=15)
-        
-        f_frame = tk.Frame(dup_win, bg=self.card_bg, padx=15, pady=15, bd=1, relief="solid")
-        f_frame.pack(fill="both", expand=True, padx=20, pady=10)
-
-        info_lbl = tk.Label(f_frame, text="Status: Ready to scan user directories for redundant files...", font=("Consolas", 10), bg=self.card_bg, fg=self.neon_green, justify="left")
-        info_lbl.pack(anchor="w", pady=10)
-
-        def start_scan():
-            info_lbl.config(text="Scanning target directories...\nFound 3 duplicate media clusters (~142 MB space waste).\nRecommended: Safe to purge.")
-            self.show_toast("Duplicate Finder", "Scan finished successfully!")
-            self.log_message("📑 Duplicate File Finder: Scanned directories and identified redundant clutter.")
-
-        tk.Button(f_frame, text="⚡ Start Deep Duplicate Scan", command=start_scan, bg="#0369a1", fg="white", font=("Segoe UI", 9, "bold"), padx=12, pady=6, relief="flat", cursor="hand2").pack(anchor="w", pady=10)
-        tk.Button(dup_win, text="❌ Close", command=dup_win.destroy, bg="#7f1d1d", fg="white", font=("Segoe UI", 9, "bold"), padx=15, pady=5, relief="flat", cursor="hand2").pack(pady=10)
-
-    def run_software_updater(self):
-        up_win = tk.Toplevel(self.root)
-        up_win.title("WinHeal AI - Software Updater Engine")
-        up_win.geometry("550x400")
-        up_win.config(bg=self.theme_bg)
-
-        tk.Label(up_win, text="🔄 SOFTWARE UPDATER & PATCH MANAGER", font=("Segoe UI", 11, "bold"), bg=self.theme_bg, fg=self.accent_color).pack(pady=15)
-        
-        u_frame = tk.Frame(up_win, bg=self.card_bg, padx=15, pady=15, bd=1, relief="solid")
-        u_frame.pack(fill="both", expand=True, padx=20, pady=10)
-
-        u_info = tk.Label(u_frame, text="Checking installed system apps against global repositories...\nAll core drivers and packages are currently up to date.", font=("Consolas", 10), bg=self.card_bg, fg=self.neon_green, justify="left")
-        u_info.pack(anchor="w", pady=10)
-
-        def check_updates():
-            u_info.config(text="Repository check complete!\n- Python Runtime: Up to Date\n- Visual C++ Redistributable: Up to Date\n- DirectX 12: Optimal Version Active")
-            self.show_toast("Software Updater", "All repositories checked and verified.")
-            self.log_message("🔄 Software Updater: All core components verified up to date.")
-
-        tk.Button(u_frame, text="🔍 Check for Component Patches", command=check_updates, bg="#064e3b", fg="#34d399", font=("Segoe UI", 9, "bold"), padx=12, pady=6, relief="flat", cursor="hand2").pack(anchor="w", pady=10)
-        tk.Button(up_win, text="❌ Close", command=up_win.destroy, bg="#7f1d1d", fg="white", font=("Segoe UI", 9, "bold"), padx=15, pady=5, relief="flat", cursor="hand2").pack(pady=10)
-
-    def run_gaming_overlay(self):
-        ov_win = tk.Toplevel(self.root)
-        ov_win.title("WinHeal AI - In-App Gaming & FPS Overlay")
-        ov_win.geometry("500x350")
-        ov_win.config(bg=self.theme_bg)
-
-        tk.Label(ov_win, text="🎮 GAMING PERFORMANCE HUD & FPS OVERLAY", font=("Segoe UI", 11, "bold"), bg=self.theme_bg, fg=self.accent_color).pack(pady=15)
-        
-        o_frame = tk.Frame(ov_win, bg=self.card_bg, padx=15, pady=15, bd=1, relief="solid")
-        o_frame.pack(fill="both", expand=True, padx=20, pady=10)
-
-        hud_text = "HUD Status: ACTIVE (Floating Mode)\nTarget Frame Rate: 144 FPS Lock\nGPU Load Allocation: Optimized\nV-Sync Engine: Enabled\nLatency: < 4ms"
-        tk.Label(o_frame, text=hud_text, font=("Consolas", 10), bg=self.card_bg, fg=self.neon_green, justify="left").pack(anchor="w", pady=10)
-        
-        self.show_toast("Gaming HUD", "Gaming Overlay HUD activated successfully.")
-        self.log_message("🎮 Gaming Overlay HUD toggled active.")
-
-    def open_network_scanner(self):
-        net_win = tk.Toplevel(self.root)
-        net_win.title("WinHeal AI 2027 - Live Network & LAN Troubleshooter")
-        net_win.geometry("600x480")
-        net_win.config(bg=self.theme_bg)
-
-        tk.Label(net_win, text="🌐 LIVE NETWORK & LAN TROUBLESHOOTING MATRIX", font=("Segoe UI", 11, "bold"), bg=self.theme_bg, fg=self.accent_color).pack(pady=12)
-
-        info_frame = tk.Frame(net_win, bg=self.card_bg, padx=15, pady=15, bd=1, relief="solid")
-        info_frame.pack(fill="both", expand=True, padx=20, pady=5)
-
-        hostname = socket.gethostname()
+    def update_metrics(self):
         try:
-            ip_addr = socket.gethostbyname(hostname)
-        except:
-            ip_addr = "127.0.0.1"
-
-        net_io = psutil.net_io_counters()
-        sent_mb = net_io.bytes_sent / (1024 * 1024)
-        recv_mb = net_io.bytes_recv / (1024 * 1024)
-
-        status_text = (
-            f"Host Machine Name : {hostname}\n"
-            f"Local IP Address  : {ip_addr}\n"
-            f"Total Data Sent   : {sent_mb:.2f} MB\n"
-            f"Total Data Recv   : {recv_mb:.2f} MB\n"
-            f"Connection Status : Active & Stable (Online)\n\n"
-            f"Troubleshooting Result: No packet loss or routing bottlenecks detected."
-        )
-
-        res_lbl = tk.Label(info_frame, text=status_text, font=("Consolas", 10), bg=self.card_bg, fg=self.neon_green, justify="left")
-        res_lbl.pack(anchor="w", pady=5)
-
-        act_frame = tk.Frame(net_win, bg=self.theme_bg)
-        act_frame.pack(fill="x", padx=20, pady=15)
-
-        def test_ping():
-            try:
-                subprocess.check_output(["ping", "-n", "1", "8.8.8.8"], stderr=subprocess.STDOUT, universal_newlines=True)
-                messagebox.showinfo("Ping Test Success", "Ping Test to Gateway/Internet Successful!\nConnection Latency is optimal.")
-                self.log_message("🌐 Network Ping Test: Success (Connection stable).")
-            except Exception as e:
-                messagebox.showwarning("Ping Warning", f"Could not complete ping test: {e}")
-
-        tk.Button(act_frame, text="⚡ Run Live Ping Test", command=test_ping, bg="#0369a1", fg="white", font=("Segoe UI", 9, "bold"), padx=12, pady=5, relief="flat", cursor="hand2").pack(side="left")
-        tk.Button(act_frame, text="❌ Close", command=net_win.destroy, bg="#7f1d1d", fg="white", font=("Segoe UI", 9, "bold"), padx=12, pady=5, relief="flat", cursor="hand2").pack(side="right")
-        self.log_message(f"🌐 Network Troubleshooter opened. IP: {ip_addr}")
-
-    def open_interactive_file_explorer(self):
-        fm_win = tk.Toplevel(self.root)
-        fm_win.title("WinHeal AI 2027 - Pro File & Drive Matrix")
-        fm_win.geometry("850x550")
-        fm_win.config(bg=self.theme_bg)
-
-        tk.Label(fm_win, text="📁 PRO FILE & DRIVE MATRIX (Live Explorer)", font=("Segoe UI", 11, "bold"), bg=self.theme_bg, fg=self.accent_color).pack(pady=10)
-
-        path_frame = tk.Frame(fm_win, bg=self.card_bg, padx=10, pady=8)
-        path_frame.pack(fill="x", padx=15, pady=5)
-
-        tk.Label(path_frame, text="Current Path:", font=("Segoe UI", 8, "bold"), bg=self.card_bg, fg="#94a3b8").pack(side="left", padx=(0, 5))
-        path_var = tk.StringVar(value=os.path.expanduser("~"))
-        path_entry = tk.Entry(path_frame, textvariable=path_var, font=("Consolas", 9), bg="#030712", fg="white", bd=1, relief="solid")
-        path_entry.pack(side="left", fill="x", expand=True, ipady=3, padx=5)
-
-        tree_frame = tk.Frame(fm_win, bg=self.card_bg)
-        tree_frame.pack(fill="both", expand=True, padx=15, pady=5)
-
-        columns = ("name", "type", "size")
-        tree = ttk.Treeview(tree_frame, columns=columns, show="headings", selectmode="browse")
-        tree.heading("name", text="File / Folder Name")
-        tree.heading("type", text="Type")
-        tree.heading("size", text="Live Size (MB / KB)")
-        
-        tree.column("name", width=450, anchor="w")
-        tree.column("type", width=120, anchor="center")
-        tree.column("size", width=180, anchor="e")
-        
-        scrollbar = ttk.Scrollbar(tree_frame, orient="vertical", command=tree.yview)
-        tree.configure(yscrollcommand=scrollbar.set)
-        
-        tree.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        def load_directory(target_path):
-            for item in tree.get_children():
-                tree.delete(item)
-            try:
-                if not os.path.exists(target_path):
-                    return
-                path_var.set(target_path)
-                if os.path.dirname(target_path) != target_path:
-                    tree.insert("", "end", values=("[..] Parent Directory", "Folder", "--"))
-
-                for entry in os.listdir(target_path):
-                    full_p = os.path.join(target_path, entry)
-                    if os.path.isdir(full_p):
-                        tree.insert("", "end", values=(entry, "Folder", "<DIR>"))
-                    else:
-                        try:
-                            file_size_bytes = os.path.getsize(full_p)
-                            if file_size_bytes > 1024 * 1024:
-                                size_str = f"{file_size_bytes / (1024*1024):.2f} MB"
-                            else:
-                                size_str = f"{file_size_bytes / 1024:.2f} KB"
-                        except:
-                            size_str = "Unknown"
-                        tree.insert("", "end", values=(entry, "File", size_str))
-            except Exception as e:
-                messagebox.showerror("Access Error", f"Cannot open directory: {e}")
-
-        def on_item_double_click(event):
-            selected_item = tree.selection()
-            if not selected_item:
-                return
-            item_values = tree.item(selected_item, "option")['values']
-            item_name = item_values[0]
-            item_type = item_values[1]
-
-            current_path = path_var.get()
-            if item_name == "[..] Parent Directory":
-                parent_dir = os.path.dirname(current_path)
-                load_directory(parent_dir)
-            elif item_type == "Folder":
-                new_path = os.path.join(current_path, item_name)
-                load_directory(new_path)
-            else:
-                file_path = os.path.join(current_path, item_name)
-                choice = messagebox.askyesno("File Action", f"Selected File: {item_name}\n\nDo you want to Save/Copy this file to another location?")
-                if choice:
-                    dest_dir = filedialog.askdirectory(title="Select Destination Folder")
-                    if dest_dir:
-                        try:
-                            shutil.copy(file_path, dest_dir)
-                            messagebox.showinfo("Success", f"File successfully saved/copied to:\n{dest_dir}")
-                            self.log_message(f"📁 File Matrix: Copied {item_name} to {dest_dir}")
-                        except Exception as e:
-                            messagebox.showerror("Error", f"Failed to save file: {e}")
-
-        tree.bind("<Double-1>", on_item_double_click)
-
-        btn_frame = tk.Frame(fm_win, bg=self.theme_bg)
-        btn_frame.pack(fill="x", padx=15, pady=10)
-
-        def go_home():
-            load_directory(os.path.expanduser("~"))
-
-        def browse_custom():
-            d = filedialog.askdirectory(title="Select Drive or Folder")
-            if d:
-                load_directory(d)
-
-        tk.Button(btn_frame, text="🏠 Home Directory", command=go_home, bg="#0369a1", fg="white", font=("Segoe UI", 9, "bold"), padx=12, pady=5, relief="flat", cursor="hand2").pack(side="left")
-        tk.Button(btn_frame, text="📂 Browse Custom Folder/Drive", command=browse_custom, bg="#064e3b", fg="#34d399", font=("Segoe UI", 9, "bold"), padx=12, pady=5, relief="flat", cursor="hand2").pack(side="left", padx=10)
-        tk.Button(btn_frame, text="❌ Close", command=fm_win.destroy, bg="#7f1d1d", fg="white", font=("Segoe UI", 9, "bold"), padx=12, pady=5, relief="flat", cursor="hand2").pack(side="right")
-
-        load_directory(os.path.expanduser("~"))
-        self.log_message("📁 Pro File & Drive Matrix opened successfully.")
-
-    def run_cloud_threat_scan(self):
-        running_procs = len(psutil.pids())
-        self.show_toast("Cloud Threat Shield", "0 Threats Detected. System is 100% Secure.")
-        self.log_message("🛡️ Cloud Threat Scanner: All processes verified safe against global database.")
-
-    def run_startup_manager(self):
-        self.show_toast("Startup Optimizer", "Boot entries optimized. Startup speed improved ~28%.")
-        self.log_message("🚀 Smart Startup Manager: Boot entries optimized.")
-
-    def run_registry_cleaner(self):
-        self.show_toast("Registry Cleaner", "Purged 42 corrupt/obsolete registry keys successfully.")
-        self.log_message("🧹 Registry Cleaner: Successfully purged 42 corrupt/obsolete registry keys.")
-
-    def run_clean_temp(self):
-        temp_dirs = [os.path.expandvars(r'%TEMP%'), os.path.expandvars(r'%SystemRoot%\Temp')]
-        deleted_files = 0
-        freed_space = 0
-        for folder in temp_dirs:
-            if os.path.exists(folder):
-                for filename in os.listdir(folder):
-                    file_path = os.path.join(folder, filename)
-                    try:
-                        if os.path.isfile(file_path) or os.path.islink(file_path):
-                            freed_space += os.path.getsize(file_path)
-                            os.unlink(file_path)
-                            deleted_files += 1
-                        elif os.path.isdir(file_path):
-                            shutil.rmtree(file_path)
-                            deleted_files += 1
-                    except Exception:
-                        pass
-        freed_mb = freed_space / (1024 * 1024)
-        self.show_toast("Debris Cleaned", f"Removed {deleted_files} temp files, freed {freed_mb:.2f} MB.")
-        self.log_message(f"🧹 Real Cleanup: Removed {deleted_files} temp files, freed {freed_mb:.2f} MB.")
-
-    def run_gaming_boost(self):
-        self.show_toast("Hyper-Gaming Boost", "System priority maximized for games.")
-        self.log_message("🎮 Hyper-Gaming Boost activated: System priority maximized for games.")
-
-    def run_turbo_boost(self):
-        ram_before = psutil.virtual_memory().percent
-        self.run_clean_temp()
-        ram_after = psutil.virtual_memory().percent
-        self.show_toast("Turbo Boost", f"RAM Usage dropped from {ram_before}% to {ram_after}%.")
-        self.log_message("🚀 One-Click Turbo Boost executed successfully.")
-
-    def run_ai_health_check(self):
-        cpu = psutil.cpu_percent()
-        ram = psutil.virtual_memory().percent
-        self.show_toast("AI Diagnostics", f"CPU: {cpu}% | RAM: {ram}% | Status: Optimal.")
-        self.log_message("⚡ AI Diagnostics executed.")
-
-    def run_empty_bin(self):
-        try:
-            ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, 7)
-            self.show_toast("Recycle Bin", "Recycle Bin deep flushed successfully via Windows API.")
-            self.log_message("🗑️ Recycle Bin deep flushed.")
-        except Exception as e:
-            messagebox.showerror("Error", f"Could not flush bin: {e}")
-
-    def export_health_report(self):
-        report_path = os.path.expanduser("~/Desktop/WinHealAI_Report.txt")
-        with open(report_path, "w", encoding="utf-8") as f:
-            f.write("=== WINHEAL AI 2027 ELITE SYSTEM REPORT ===\n")
-            f.write(f"Date: {datetime.datetime.now()}\n")
-            f.write(f"CPU Cores: {psutil.cpu_count()}\n")
-            f.write(f"Total RAM: {psutil.virtual_memory().total / (1024**3):.2f} GB\n")
-            f.write(f"Current RAM Usage: {psutil.virtual_memory().percent}%\n")
-            f.write("Status: A+ Grade Performance.\n")
-        self.show_toast("Report Exported", f"Saved to Desktop: WinHealAI_Report.txt")
-        self.log_message("📑 Elite Health Report exported to Desktop.")
-
-    def open_ai_copilot(self):
-        copilot_win = tk.Toplevel(self.root)
-        copilot_win.title("WinHeal AI 2027 - Embedded AI Copilot")
-        copilot_win.geometry("650x500")
-        copilot_win.config(bg=self.theme_bg)
-
-        tk.Label(copilot_win, text="🤖 WINHEAL NEURAL AI TROUBLESHOOTER", font=("Segoe UI", 11, "bold"), bg=self.theme_bg, fg=self.accent_color).pack(pady=12)
-
-        chat_box = tk.Text(copilot_win, height=15, width=70, font=("Consolas", 9), bg="#030712", fg=self.neon_green, bd=1, relief="solid")
-        chat_box.pack(padx=15, pady=5, fill="both", expand=True)
-        chat_box.insert(tk.END, "AI Copilot: Hello Chief! I am connected to your live system telemetry. Ask me anything.\n\n")
-
-        input_frame = tk.Frame(copilot_win, bg=self.theme_bg)
-        input_frame.pack(fill="x", padx=15, pady=10)
-
-        entry_box = tk.Entry(input_frame, font=("Segoe UI", 10), bg=self.card_bg, fg="white", insertbackground="white", bd=1, relief="solid")
-        entry_box.pack(side="left", fill="x", expand=True, ipady=4, padx=(0, 5))
-
-        def ask_ai():
-            query = entry_box.get()
-            if not query:
-                return
-            chat_box.insert(tk.END, f"You: {query}\n")
-            entry_box.delete(0, tk.END)
-            
             cpu = psutil.cpu_percent()
-            ram = psutil.virtual_memory().percent
-            response = f"AI Copilot: Current CPU is at {cpu}% and RAM is at {ram}%. System is running within safe limits."
-            
-            if "slow" in query.lower() or "lag" in query.lower():
-                response = f"AI Copilot recommendation: Your RAM usage is {ram}%. Please run 'Deep Registry Cleaner' or 'Turbo Boost'."
-            elif "game" in query.lower():
-                response = "AI Copilot recommendation: Run 'Ultimate Hyper-Gaming Boost' from the sidebar."
-            
-            chat_box.insert(tk.END, f"{response}\n\n")
-            chat_box.see(tk.END)
+            vm = psutil.virtual_memory()
+            du = psutil.disk_usage(self.root_drive)
+            self.cpu_lbl.config(text=f"{cpu:.0f}%")
+            self.cpu_bar["value"] = cpu
+            self.ram_lbl.config(text=f"{vm.percent:.0f}%")
+            self.ram_bar["value"] = vm.percent
+            self.disk_lbl.config(text=f"{du.percent:.0f}%")
+            self.disk_bar["value"] = du.percent
+            bat = get_battery()
+            if bat is None:
+                self.bat_lbl.config(text=self.t("no_battery"), font=("Segoe UI", 11, "bold"))
+                self.bat_bar["value"] = 0
+            else:
+                state = self.t("charging") if bat.power_plugged else self.t("on_battery")
+                self.bat_lbl.config(text=f"{bat.percent:.0f}%  ({state})", font=("Segoe UI", 11, "bold"))
+                self.bat_bar["value"] = bat.percent
+            self.cpu_hist = self.cpu_hist[1:] + [cpu]
+            self.ram_hist = self.ram_hist[1:] + [vm.percent]
+            self.cpu_line.set_ydata(self.cpu_hist)
+            self.ram_line.set_ydata(self.ram_hist)
+            self.canvas.draw_idle()
+            high = cpu >= 90 or vm.percent >= 90 or du.percent >= 95
+            self.status_badge.config(text=self.t("status_warn" if high else "status_ok"),
+                                     bg="#7f1d1d" if high else "#064e3b",
+                                     fg="#fecaca" if high else "#34d399")
+        except (tk.TclError, psutil.Error, OSError):
+            pass
+        self.root.after(2000, self.update_metrics)
 
-        tk.Button(input_frame, text="Ask AI ⚡", command=ask_ai, bg="#0369a1", fg="white", font=("Segoe UI", 9, "bold"), padx=15, pady=4, relief="flat", cursor="hand2").pack(side="right")
-        self.log_message("🤖 AI Copilot opened.\n")
+    def result_window(self, title, size="680x480"):
+        win = tk.Toplevel(self.root)
+        win.title(title)
+        win.geometry(size)
+        win.config(bg=self.bg)
+        win.cancel = threading.Event()
+        win.bind("<Destroy>", lambda e: win.cancel.set() if e.widget is win else None)
+        tk.Label(win, text=title, font=("Segoe UI", 12, "bold"), bg=self.bg, fg=self.accent).pack(pady=10)
+        frame = tk.Frame(win, bg=self.card)
+        frame.pack(fill="both", expand=True, padx=15, pady=5)
+        text = tk.Text(frame, font=("Consolas", 10), bg="#030712", fg=self.neon, bd=0, wrap="word")
+        sb = ttk.Scrollbar(frame, command=text.yview)
+        text.configure(yscrollcommand=sb.set)
+        text.pack(side="left", fill="both", expand=True)
+        sb.pack(side="right", fill="y")
+        btns = tk.Frame(win, bg=self.bg)
+        btns.pack(fill="x", padx=15, pady=10)
+        self.button(btns, self.t("close"), win.destroy, "#7f1d1d").pack(side="right")
+        def write(s, clear=False):
+            def _w():
+                try:
+                    if clear:
+                        text.delete("1.0", tk.END)
+                    text.insert(tk.END, s)
+                    text.see(tk.END)
+                except tk.TclError:
+                    pass
+            self.ui(_w)
+        return win, btns, write
 
-    def run_hardware_benchmark(self):
-        bench_win = tk.Toplevel(self.root)
-        bench_win.title("WinHeal AI - Hardware Benchmark Suite")
-        bench_win.geometry("500x350")
-        bench_win.config(bg=self.theme_bg)
+    def summary_text(self):
+        cpu = psutil.cpu_percent(interval=1)
+        vm = psutil.virtual_memory()
+        du = psutil.disk_usage(self.root_drive)
+        bat = get_battery()
+        uptime_days = (time.time() - psutil.boot_time()) / 86400
+        lines = [
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M}",
+            f"{self.t('cpu')}: {cpu:.0f}%  ({psutil.cpu_count()} {self.t('threads')})",
+            f"{self.t('ram')}: {vm.percent:.0f}%  ({fmt_size(vm.used)} / {fmt_size(vm.total)})",
+            f"{self.t('disk')} {self.root_drive}: {du.percent:.0f}%  ({fmt_size(du.free)} {self.t('free')})",
+            f"{self.t('uptime')}: {uptime_days:.1f} d",
+        ]
+        if bat is not None:
+            lines.append(f"{self.t('battery')}: {bat.percent:.0f}% "
+                         f"({self.t('charging') if bat.power_plugged else self.t('on_battery')})")
+        issues = []
+        if cpu >= 85:
+            issues.append(self.t("issue_cpu"))
+        if vm.percent >= 85:
+            issues.append(self.t("issue_ram"))
+        if du.percent >= 90:
+            issues.append(self.t("issue_disk"))
+        if bat is not None and not bat.power_plugged and bat.percent <= 20:
+            issues.append(self.t("issue_battery"))
+        if uptime_days >= 7:
+            issues.append(self.t("issue_uptime", d=int(uptime_days)))
+        lines.append("")
+        if issues:
+            lines.append(self.t("found_issues"))
+            lines.extend(f"  - {i}" for i in issues)
+        else:
+            lines.append(self.t("no_issues"))
+        procs = []
+        for p in psutil.process_iter(["name", "memory_info"]):
+            try:
+                mi = p.info["memory_info"]
+                if mi:
+                    procs.append((mi.rss, p.info["name"] or "?"))
+            except psutil.Error:
+                pass
+        procs.sort(reverse=True)
+        lines += ["", self.t("top_procs")]
+        lines.extend(f"  {fmt_size(r):>10}  {n}" for r, n in procs[:8])
+        return "\n".join(lines)
 
-        tk.Label(bench_win, text="🏆 SYSTEM HARDWARE BENCHMARK", font=("Segoe UI", 11, "bold"), bg=self.theme_bg, fg=self.accent_color).pack(pady=15)
-        res_frame = tk.Frame(bench_win, bg=self.card_bg, padx=15, pady=15, bd=1, relief="solid")
-        res_frame.pack(fill="both", expand=True, padx=20, pady=10)
+    def diagnostics(self):
+        _, _, write = self.result_window(self.t("menu_diag"))
+        def work():
+            write(self.t("working") + "\n", clear=True)
+            write(self.summary_text() + "\n", clear=True)
+            self.log(self.t("menu_diag"))
+        self.run_bg(work)
 
-        cpu_score = psutil.cpu_count() * 1650
-        total_ram_gb = round(psutil.virtual_memory().total / (1024**3), 2)
-        
-        info_text = f"Processor Cores: {psutil.cpu_count()} Cores\nTotal Physical RAM: {total_ram_gb} GB\nEstimated CPU Benchmark Score: {cpu_score} PTS\nHardware Rating: EXCELLENT (Tier-1)"
-        
-        tk.Label(res_frame, text=info_text, font=("Consolas", 10), bg=self.card_bg, fg=self.neon_green, justify="left").pack(anchor="w", pady=10)
-        self.log_message("🏆 Hardware Benchmark executed successfully.")
+    def export_report(self):
+        path = filedialog.asksaveasfilename(defaultextension=".txt", initialfile="WinHeal_Report.txt",
+                                            filetypes=[("Text", "*.txt")])
+        if not path:
+            return
+        def work():
+            text = "WinHeal report\n" + "=" * 30 + "\n" + self.summary_text() + "\n"
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(text)
+            self.toast(self.t("menu_report"), self.t("report_saved", path=path))
+            self.log(self.t("report_saved", path=path))
+        self.run_bg(work)
+
+    def network(self):
+        _, btns, write = self.result_window(self.t("menu_net"))
+        def work():
+            write(self.t("working") + "\n", clear=True)
+            io = psutil.net_io_counters()
+            write(f"{self.t('host')}: {socket.gethostname()}\n"
+                  f"{self.t('local_ip')}: {local_ip()}\n"
+                  f"{self.t('sent')}: {fmt_size(io.bytes_sent)}\n"
+                  f"{self.t('received')}: {fmt_size(io.bytes_recv)}\n\n", clear=True)
+            p = ping_ok()
+            write(f"{self.t('ping_test')}: {self.t('ok') if p else self.t('failed')}\n")
+            d = dns_ok()
+            write(f"{self.t('dns_test')}: {self.t('ok') if d else self.t('failed')}\n\n")
+            write(self.t("net_ok") if (p and d) else self.t("net_dns") if (p and not d) else self.t("net_down"))
+            self.log(f"{self.t('menu_net')}: ping={p}, dns={d}")
+        self.run_bg(work)
+        if IS_WIN:
+            def flush():
+                def w():
+                    rc, _ = run_cmd(["ipconfig", "/flushdns"], timeout=20)
+                    self.toast(self.t("flush_dns"), self.t("dns_flushed") if rc == 0 else self.t("failed"))
+                    self.log(self.t("flush_dns"))
+                self.run_bg(w)
+            self.button(btns, self.t("flush_dns"), flush).pack(side="left")
+
+    def startup(self):
+        win, btns, write = self.result_window(self.t("menu_startup"))
+        if not IS_WIN:
+            write(self.t("windows_only"))
+            return
+        items = startup_entries()
+        if not items:
+            write(self.t("startup_none") + "\n\n")
+        for scope, name, cmd in items:
+            write(f"[{scope}] {name}\n    {cmd}\n")
+        write("\n" + self.t("startup_note"))
+        def open_settings():
+            try:
+                os.startfile("ms-settings:startupapps")
+            except OSError:
+                run_cmd(["taskmgr"])
+        self.button(btns, self.t("open_startup"), open_settings).pack(side="left")
+
+    def junk(self):
+        win, btns, write = self.result_window(self.t("menu_junk"))
+        state = {"files": [], "total": 0}
+        del_btn = self.button(btns, self.t("delete_now"), lambda: delete(), "#b45309")
+        del_btn.config(state="disabled")
+        del_btn.pack(side="left")
+        def scan():
+            write(self.t("working") + "\n", clear=True)
+            files, total = scan_junk()
+            state["files"], state["total"] = files, total
+            if files:
+                write(self.t("junk_found", n=len(files), size=fmt_size(total)) + "\n", clear=True)
+                self.ui(lambda: del_btn.config(state="normal"))
+            else:
+                write(self.t("junk_none") + "\n", clear=True)
+        def delete():
+            files, total = state["files"], state["total"]
+            if not messagebox.askyesno(self.t("menu_junk"),
+                                       self.t("confirm_delete", n=len(files), size=fmt_size(total))):
+                return
+            del_btn.config(state="disabled")
+            def work():
+                n, freed, failed = delete_files(files)
+                msg = self.t("junk_done", n=n, size=fmt_size(freed), f=failed)
+                write(msg + "\n", clear=True)
+                self.toast(self.t("menu_junk"), msg)
+                self.log(msg)
+            self.run_bg(work)
+        self.run_bg(scan)
+
+    def empty_bin(self):
+        if not IS_WIN:
+            messagebox.showinfo(self.t("menu_bin"), self.t("windows_only"))
+            return
+        if not messagebox.askyesno(self.t("menu_bin"), self.t("bin_confirm")):
+            return
+        def work():
+            import ctypes
+            ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, 7)
+            self.toast(self.t("menu_bin"), self.t("bin_done"))
+            self.log(self.t("bin_done"))
+        self.run_bg(work)
+
+    def duplicates(self):
+        folder = filedialog.askdirectory(title=self.t("dups_pick"))
+        if not folder:
+            return
+        win, _, write = self.result_window(self.t("menu_dups"), "760x520")
+        def work():
+            write(self.t("dups_scanning", folder=folder) + "\n", clear=True)
+            res = find_duplicates(folder, win.cancel)
+            if res is None:
+                return
+            groups, _ = res
+            if not groups:
+                write(self.t("dups_none") + "\n", clear=True)
+                return
+            wasted = sum(size * (len(ps) - 1) for size, ps in groups)
+            out = [self.t("dups_summary", g=len(groups), size=fmt_size(wasted)), self.t("dups_note"), ""]
+            for size, ps in groups[:50]:
+                out.append(f"{fmt_size(size)} x {len(ps)}")
+                out.extend(f"    {p}" for p in ps)
+            if len(groups) > 50:
+                out.append(f"... +{len(groups) - 50}")
+            write("\n".join(out) + "\n", clear=True)
+            self.log(self.t("dups_summary", g=len(groups), size=fmt_size(wasted)))
+        self.run_bg(work)
+
+    def updates(self):
+        _, _, write = self.result_window(self.t("menu_updates"), "760x480")
+        def work():
+            if not IS_WIN or not shutil.which("winget"):
+                write(self.t("wg_missing") if IS_WIN else self.t("windows_only"), clear=True)
+                return
+            write(self.t("working") + "\n", clear=True)
+            _, out = run_cmd(["winget", "upgrade", "--accept-source-agreements"], timeout=180)
+            write(out.strip() + "\n\n" + self.t("wg_hint"), clear=True)
+            self.log(self.t("menu_updates"))
+        self.run_bg(work)
+
+    def benchmark(self):
+        _, _, write = self.result_window(self.t("menu_bench"), "560x300")
+        def work():
+            write(self.t("working") + "\n", clear=True)
+            s = cpu_bench()
+            write(self.t("bench_cpu", s=s) + "\n", clear=True)
+            try:
+                mb = disk_write_bench()
+                write(self.t("bench_disk", mb=mb) + "\n")
+            except OSError as e:
+                write(f"{self.t('error')}: {e}\n")
+            write("\n" + self.t("bench_note"))
+            self.log(self.t("menu_bench"))
+        self.run_bg(work)
+
+    def file_explorer(self):
+        win = tk.Toplevel(self.root)
+        win.title(self.t("menu_files"))
+        win.geometry("860x560")
+        win.config(bg=self.bg)
+        tk.Label(win, text=self.t("menu_files"), font=("Segoe UI", 12, "bold"), bg=self.bg,
+                 fg=self.accent).pack(pady=10)
+        pf = tk.Frame(win, bg=self.card, padx=10, pady=8)
+        pf.pack(fill="x", padx=15, pady=5)
+        tk.Label(pf, text=self.t("path") + ":", font=("Segoe UI", 9, "bold"), bg=self.card,
+                 fg="#94a3b8").pack(side="left", padx=(0, 5))
+        path_var = tk.StringVar(value=os.path.expanduser("~"))
+        entry = tk.Entry(pf, textvariable=path_var, font=("Consolas", 10), bg="#030712", fg="white",
+                         insertbackground="white", bd=1, relief="solid")
+        entry.pack(side="left", fill="x", expand=True, ipady=3, padx=5)
+        tf = tk.Frame(win, bg=self.card)
+        tf.pack(fill="both", expand=True, padx=15, pady=5)
+        tree = ttk.Treeview(tf, columns=("name", "type", "size"), show="headings", selectmode="browse")
+        for col, key, w, anchor in (("name", "col_name", 440, "w"), ("type", "col_type", 110, "center"),
+                                    ("size", "col_size", 160, "e")):
+            tree.heading(col, text=self.t(key))
+            tree.column(col, width=w, anchor=anchor)
+        sb = ttk.Scrollbar(tf, orient="vertical", command=tree.yview)
+        tree.configure(yscrollcommand=sb.set)
+        tree.pack(side="left", fill="both", expand=True)
+        sb.pack(side="right", fill="y")
+        entries = {}
+        def load(target):
+            if not os.path.isdir(target):
+                messagebox.showerror(self.t("error"), target)
+                return
+            try:
+                names = os.listdir(target)
+            except OSError as e:
+                messagebox.showerror(self.t("error"), str(e))
+                return
+            tree.delete(*tree.get_children())
+            entries.clear()
+            path_var.set(target)
+            parent = os.path.dirname(target)
+            if parent and parent != target:
+                entries[tree.insert("", "end", values=(self.t("parent_dir"), "", ""))] = ("..", "parent")
+            folders = sorted((n for n in names if os.path.isdir(os.path.join(target, n))), key=str.lower)
+            files = sorted((n for n in names if not os.path.isdir(os.path.join(target, n))), key=str.lower)
+            for n in folders:
+                entries[tree.insert("", "end", values=(n, self.t("folder"), ""))] = (n, "folder")
+            for n in files:
+                try:
+                    size = fmt_size(os.path.getsize(os.path.join(target, n)))
+                except OSError:
+                    size = "?"
+                entries[tree.insert("", "end", values=(n, self.t("file"), size))] = (n, "file")
+        def on_double(_event):
+            sel = tree.selection()
+            if not sel:
+                return
+            name, kind = entries[sel[0]]
+            cur = path_var.get()
+            if kind == "parent":
+                load(os.path.dirname(cur))
+            elif kind == "folder":
+                load(os.path.join(cur, name))
+            elif messagebox.askyesno(self.t("menu_files"), self.t("copy_ask", name=name)):
+                dest = filedialog.askdirectory()
+                if dest:
+                    try:
+                        shutil.copy(os.path.join(cur, name), dest)
+                        messagebox.showinfo(self.t("menu_files"), self.t("copy_done", dest=dest))
+                        self.log(f"{name} -> {dest}")
+                    except OSError as e:
+                        messagebox.showerror(self.t("error"), str(e))
+        tree.bind("<Double-1>", on_double)
+        entry.bind("<Return>", lambda e: load(path_var.get()))
+        def browse():
+            d = filedialog.askdirectory()
+            if d:
+                load(d)
+        bf = tk.Frame(win, bg=self.bg)
+        bf.pack(fill="x", padx=15, pady=10)
+        self.button(bf, "🏠 " + self.t("home"), lambda: load(os.path.expanduser("~"))).pack(side="left")
+        self.button(bf, self.t("browse"), browse, "#064e3b", "#34d399").pack(side="left", padx=10)
+        self.button(bf, self.t("close"), win.destroy, "#7f1d1d").pack(side="right")
+        load(os.path.expanduser("~"))
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = WinHealApp(root)
-    root.mainloop()
+    tk_root = tk.Tk()
+    WinHealApp(tk_root)
+    tk_root.mainloop()
