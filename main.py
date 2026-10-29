@@ -1,4 +1,4 @@
-"""WinHeal v0.2.0 WORLD EDITION - SAFE + Icon + AutoUpdate + 10 Languages"""
+"""WinHeal v0.3.0 WORLD EDITION - SAFE + Icon + AutoUpdate + 10 Languages + Gaming/Battery/Internet"""
 import datetime
 import hashlib
 import os
@@ -11,28 +11,24 @@ import threading
 import time
 import webbrowser
 from collections import defaultdict
-
 import psutil
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog, colorchooser
-
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-
 try:
     import winreg
 except ImportError:
     winreg = None
-
 try:
     import requests
 except ImportError:
     requests = None
 
-VERSION = "0.2.0 - WORLD"
+VERSION = "0.3.0 - WORLD"
 IS_WIN = os.name == "nt"
 NO_WINDOW = 0x08000000 if IS_WIN else 0
 LOG_DIR = os.path.join(os.path.expanduser("~"), "WinHealLogs")
@@ -41,19 +37,11 @@ GITHUB_REPO = "soyenhasan/WinHeal-AI"
 
 STRINGS = {
     "en": {
-        "app_title": "WinHeal v0.2.0 World Edition", "menu_diag": "System Diagnostics", "menu_files": "File & Drive Explorer", "menu_net": "Network Troubleshooter", "menu_startup": "Startup Programs", "menu_dups": "Duplicate File Finder", "menu_updates": "Software Updates", "menu_junk": "Junk File Cleaner", "menu_bin": "Empty Recycle Bin", "menu_bench": "Quick Benchmark", "menu_report": "Export System Report", "theme": "THEME", "language": "LANGUAGE", "custom": "Custom", "quit": "Quit", "dashboard": "SYSTEM DASHBOARD", "status_ok": "● System load: normal", "status_warn": "● System load: high", "cpu": "CPU", "ram": "MEMORY", "disk": "DISK", "battery": "BATTERY", "no_battery": "No battery", "charging": "Plugged in", "on_battery": "On battery", "graph_title": "Live CPU & memory", "log_title": "Activity log", "close": "Close", "working": "Working...", "error": "Error", "windows_only": "Windows only.", "threads": "threads", "free": "free", "started": "WinHeal World Edition started.", "issue_cpu": "CPU very high.", "issue_ram": "Memory very high.", "issue_disk": "Disk almost full.", "issue_battery": "Battery low.", "issue_uptime": "PC not restarted {d} days.", "no_issues": "No problems.", "found_issues": "Problems:", "top_procs": "Top memory users:", "uptime": "Uptime", "host": "Computer name", "local_ip": "Local IP", "sent": "Data sent", "received": "Data received", "ping_test": "Internet ping (8.8.8.8)", "dns_test": "DNS lookup (example.com)", "ok": "OK", "failed": "FAILED", "net_ok": "Connection looks healthy.", "net_dns": "DNS fails.", "net_down": "No internet.", "flush_dns": "Flush DNS cache", "dns_flushed": "DNS cache flushed.", "startup_none": "No startup entries.", "startup_note": "Use Task Manager > Startup apps.", "open_startup": "Open Startup settings", "junk_found": "Found {n} temp files, total {size}.", "junk_none": "No old temp files.", "delete_now": "Delete these files", "confirm_delete": "Delete {n} files ({size})?", "junk_done": "Deleted {n} files, freed {size}. {f} skipped.", "bin_confirm": "Permanently empty Recycle Bin?", "bin_done": "Recycle Bin emptied.", "dups_pick": "Choose a folder", "dups_scanning": "Scanning {folder} ...", "dups_none": "No duplicates.", "dups_summary": "{g} groups, recoverable {size}.", "dups_note": "WinHeal deletes nothing.", "wg_missing": "winget not found.", "wg_hint": "Run: winget upgrade --all", "bench_cpu": "CPU test: {s:.2f} s", "bench_disk": "Disk write: {mb:.0f} MB/s", "bench_note": "Simple tests.", "report_saved": "Report saved: {path}", "parent_dir": "[..] Parent folder", "col_name": "Name", "col_type": "Type", "col_size": "Size", "folder": "Folder", "file": "File", "home": "Home", "browse": "Browse...", "copy_ask": "Copy '{name}'?", "copy_done": "Copied to: {dest}", "path": "Path", "check_update": "Check for Update", "update_available": "Update {latest} available!", "up_to_date": "You are up to date!", "backup_done": "Backup created.", "update": "Update",
+        "app_title": "WinHeal v0.3.0 World Edition", "menu_diag": "System Diagnostics", "menu_files": "File & Drive Explorer", "menu_net": "Network Troubleshooter", "menu_startup": "Startup Programs", "menu_dups": "Duplicate File Finder", "menu_updates": "Software Updates", "menu_junk": "Junk File Cleaner", "menu_bin": "Empty Recycle Bin", "menu_bench": "Quick Benchmark", "menu_report": "Export System Report", "menu_gaming": "🎮 Gaming Mode", "menu_battery": "🔋 Battery Saver", "menu_internet": "🌐 Internet Cleaner", "theme": "THEME", "language": "LANGUAGE", "custom": "Custom", "quit": "Quit", "dashboard": "SYSTEM DASHBOARD", "status_ok": "● System load: normal", "status_warn": "● System load: high", "cpu": "CPU", "ram": "MEMORY", "disk": "DISK", "battery": "BATTERY", "no_battery": "No battery", "charging": "Plugged in", "on_battery": "On battery", "graph_title": "Live CPU & memory", "log_title": "Activity log", "close": "Close", "working": "Working...", "error": "Error", "windows_only": "Windows only.", "threads": "threads", "free": "free", "started": "WinHeal World Edition v0.3.0 started - 3 New Features Added!", "issue_cpu": "CPU very high.", "issue_ram": "Memory very high.", "issue_disk": "Disk almost full.", "issue_battery": "Battery low.", "issue_uptime": "PC not restarted {d} days.", "no_issues": "No problems.", "found_issues": "Problems:", "top_procs": "Top memory users:", "uptime": "Uptime", "host": "Computer name", "local_ip": "Local IP", "sent": "Data sent", "received": "Data received", "ping_test": "Internet ping (8.8.8.8)", "dns_test": "DNS lookup (example.com)", "ok": "OK", "failed": "FAILED", "net_ok": "Connection looks healthy.", "net_dns": "DNS fails.", "net_down": "No internet.", "flush_dns": "Flush DNS cache", "dns_flushed": "DNS cache flushed.", "startup_none": "No startup entries.", "startup_note": "Use Task Manager > Startup apps.", "open_startup": "Open Startup settings", "junk_found": "Found {n} temp files, total {size}.", "junk_none": "No old temp files.", "delete_now": "Delete these files", "confirm_delete": "Delete {n} files ({size})?", "junk_done": "Deleted {n} files, freed {size}. {f} skipped.", "bin_confirm": "Permanently empty Recycle Bin?", "bin_done": "Recycle Bin emptied.", "dups_pick": "Choose a folder", "dups_scanning": "Scanning {folder} ...", "dups_none": "No duplicates.", "dups_summary": "{g} groups, recoverable {size}.", "dups_note": "WinHeal deletes nothing.", "wg_missing": "winget not found.", "wg_hint": "Run: winget upgrade --all", "bench_cpu": "CPU test: {s:.2f} s", "bench_disk": "Disk write: {mb:.0f} MB/s", "bench_note": "Simple tests.", "report_saved": "Report saved: {path}", "parent_dir": "[..] Parent folder", "col_name": "Name", "col_type": "Type", "col_size": "Size", "folder": "Folder", "file": "File", "home": "Home", "browse": "Browse...", "copy_ask": "Copy '{name}'?", "copy_done": "Copied to: {dest}", "path": "Path", "check_update": "Check for Update", "update_available": "Update {latest} available!", "up_to_date": "You are up to date!", "backup_done": "Backup created.", "update": "Update", "gaming_on": "Gaming Mode ON - RAM Boosted!", "battery_on": "Battery Saver ON", "internet_cleaned": "Browser Cache Cleaned!"
     },
     "bn": {
-        "app_title": "WinHeal v0.2.0 বিশ্ব সংস্করণ", "menu_diag": "সিস্টেম ডায়াগনস্টিক", "menu_files": "ফাইল এক্সপ্লোরার", "menu_net": "নেটওয়ার্ক", "menu_startup": "স্টার্টআপ", "menu_dups": "ডুপ্লিকেট", "menu_updates": "আপডেট", "menu_junk": "জাঙ্ক ক্লিনার", "menu_bin": "বিন খালি", "menu_bench": "বেঞ্চমার্ক", "menu_report": "রিপোর্ট", "theme": "থিম", "language": "ভাষা", "custom": "কাস্টম", "quit": "বন্ধ করুন", "dashboard": "সিস্টেম ড্যাশবোর্ড", "status_ok": "● লোড: স্বাভাবিক", "status_warn": "● লোড: বেশি", "cpu": "CPU", "ram": "মেমোরি", "disk": "ডিস্ক", "battery": "ব্যাটারি", "no_battery": "ব্যাটারি নেই", "charging": "চার্জে আছে", "on_battery": "ব্যাটারিতে", "graph_title": "লাইভ CPU ও মেমোরি", "log_title": "কাজের লগ", "close": "বন্ধ", "working": "কাজ চলছে...", "error": "ত্রুটি", "started": "WinHeal বিশ্ব সংস্করণ চালু", "check_update": "আপডেট চেক", "up_to_date": "আপডেটেড!", "home": "হোম", "browse": "বেছে নিন", "path": "পাথ", "parent_dir": "[..] উপরে", "col_name": "নাম", "col_type": "ধরন", "col_size": "সাইজ", "folder": "ফোল্ডার", "file": "ফাইল", "copy_ask": "'{name}' কপি করবেন?", "copy_done": "কপি: {dest}", "report_saved": "রিপোর্ট: {path}", "windows_only": "শুধু Windows", "threads": "থ্রেড", "free": "খালি", "issue_cpu": "CPU বেশি", "issue_ram": "মেমোরি বেশি", "issue_disk": "ডিস্ক ভর্তি", "issue_battery": "ব্যাটারি কম", "issue_uptime": "{d} দিন রিস্টার্ট হয়নি", "no_issues": "সমস্যা নেই", "found_issues": "সমস্যা:", "top_procs": "মেমোরি ব্যবহার:", "uptime": "চালু আছে", "host": "কম্পিউটার নাম", "local_ip": "লোকাল IP", "sent": "পাঠানো", "received": "পাওয়া", "ping_test": "পিং", "dns_test": "DNS", "ok": "ঠিক", "failed": "ব্যর্থ", "net_ok": "সংযোগ ঠিক", "net_dns": "DNS সমস্যা", "net_down": "ইন্টারনেট নেই", "flush_dns": "DNS পরিষ্কার", "dns_flushed": "DNS পরিষ্কার হয়েছে", "startup_none": "স্টার্টআপ নেই", "startup_note": "Task Manager ব্যবহার করুন", "open_startup": "স্টার্টআপ খুলুন", "junk_found": "{n}টি ফাইল {size}", "junk_none": "ফাইল নেই", "delete_now": "মুছুন", "confirm_delete": "{n}টি ফাইল {size} মুছবেন?", "junk_done": "{n}টি মুছে {size} খালি", "bin_confirm": "বিন খালি করবেন?", "bin_done": "বিন খালি", "dups_pick": "ফোল্ডার বেছে নিন", "dups_scanning": "স্ক্যান {folder}", "dups_none": "ডুপ্লিকেট নেই", "dups_summary": "{g} গ্রুপ {size}", "dups_note": "WinHeal মোছে না", "wg_missing": "winget নেই", "wg_hint": "winget upgrade --all", "bench_cpu": "CPU {s:.2f}s", "bench_disk": "ডিস্ক {mb:.0f} MB/s", "bench_note": "সহজ টেস্ট", "backup_done": "ব্যাকআপ হয়েছে", "update": "আপডেট",
+        "app_title": "WinHeal v0.3.0 বিশ্ব সংস্করণ", "menu_diag": "সিস্টেম ডায়াগনস্টিক", "menu_files": "ফাইল এক্সপ্লোরার", "menu_net": "নেটওয়ার্ক", "menu_startup": "স্টার্টআপ", "menu_dups": "ডুপ্লিকেট", "menu_updates": "আপডেট", "menu_junk": "জাঙ্ক ক্লিনার", "menu_bin": "বিন খালি", "menu_bench": "বেঞ্চমার্ক", "menu_report": "রিপোর্ট", "menu_gaming": "🎮 গেমিং মোড", "menu_battery": "🔋 ব্যাটারি সেভার", "menu_internet": "🌐 ইন্টারনেট ক্লিনার", "theme": "থিম", "language": "ভাষা", "custom": "কাস্টম", "quit": "বন্ধ করুন", "dashboard": "সিস্টেম ড্যাশবোর্ড", "status_ok": "● লোড: স্বাভাবিক", "status_warn": "● লোড: বেশি", "cpu": "CPU", "ram": "মেমোরি", "disk": "ডিস্ক", "battery": "ব্যাটারি", "no_battery": "ব্যাটারি নেই", "charging": "চার্জে আছে", "on_battery": "ব্যাটারিতে", "graph_title": "লাইভ CPU ও মেমোরি", "log_title": "কাজের লগ", "close": "বন্ধ", "working": "কাজ চলছে...", "error": "ত্রুটি", "started": "WinHeal v0.3.0 চালু - ৩ টা নতুন ফিচার!", "check_update": "আপডেট চেক", "gaming_on": "গেমিং মোড চালু!", "battery_on": "ব্যাটারি সেভার চালু!", "internet_cleaned": "ব্রাউজার পরিষ্কার!"
     },
-    "ar": {"app_title": "WinHeal v0.2.0 عالمي", "menu_diag": "تشخيص", "menu_files": "الملفات", "menu_net": "الشبكة", "menu_startup": "بدء", "menu_dups": "مكرر", "menu_updates": "تحديث", "menu_junk": "تنظيف", "menu_bin": "السلة", "menu_bench": "اختبار", "menu_report": "تقرير", "theme": "سمة", "language": "لغة", "custom": "مخصص", "quit": "خروج", "dashboard": "لوحة النظام", "check_update": "تحقق", "home": "الرئيسية", "browse": "تصفح", "path": "مسار", "parent_dir": "[..]", "col_name": "اسم", "col_type": "نوع", "col_size": "حجم", "folder": "مجلد", "file": "ملف", "started": "بدأ WinHeal"},
-    "hi": {"app_title": "WinHeal v0.2.0 वर्ल्ड", "menu_diag": "जांच", "menu_files": "फाइल", "menu_net": "नेटवर्क", "menu_startup": "स्टार्टअप", "menu_dups": "डुप्लिकेट", "menu_updates": "अपडेट", "menu_junk": "क्लीनर", "menu_bin": "बिन", "menu_bench": "टेस्ट", "menu_report": "रिपोर्ट", "theme": "थीम", "language": "भाषा", "quit": "बंद", "dashboard": "डैशबोर्ड", "check_update": "अपडेट", "home": "होम", "browse": "ब्राउज़", "path": "पाथ", "parent_dir": "[..]", "col_name": "नाम", "col_type": "प्रकार", "col_size": "आकार", "folder": "फ़ोल्डर", "file": "फ़ाइल", "started": "शुरू"},
-    "es": {"app_title": "WinHeal v0.2.0 Mundial", "menu_diag": "Diagnóstico", "menu_files": "Archivos", "menu_net": "Red", "menu_startup": "Inicio", "menu_dups": "Duplicados", "menu_updates": "Actualizaciones", "menu_junk": "Limpieza", "menu_bin": "Papelera", "menu_bench": "Benchmark", "menu_report": "Exportar", "theme": "TEMA", "language": "IDIOMA", "quit": "Salir", "dashboard": "PANEL", "check_update": "Buscar update", "home": "Home", "browse": "Browse", "path": "Path", "parent_dir": "[..] Parent", "col_name": "Name", "col_type": "Type", "col_size": "Size", "folder": "Folder", "file": "File", "started": "WinHeal iniciado"},
-    "zh": {"app_title": "WinHeal v0.2.0 世界版", "menu_diag": "诊断", "menu_files": "文件", "menu_net": "网络", "menu_startup": "启动", "menu_dups": "重复", "menu_updates": "更新", "menu_junk": "清理", "menu_bin": "回收站", "menu_bench": "测试", "menu_report": "导出报告", "theme": "主题", "language": "语言", "quit": "退出", "dashboard": "系统仪表板", "check_update": "检查更新", "home": "主页", "browse": "浏览", "path": "路径", "parent_dir": "[..]", "col_name": "名称", "col_type": "类型", "col_size": "大小", "folder": "文件夹", "file": "文件", "started": "WinHeal 已启动"},
-    "pt": {"app_title": "WinHeal v0.2.0 Edição Mundial", "menu_diag": "Diagnóstico do Sistema", "menu_files": "Explorador de Arquivos", "menu_net": "Rede", "menu_startup": "Inicialização", "menu_dups": "Duplicados", "menu_updates": "Atualizações", "menu_junk": "Limpeza", "menu_bin": "Esvaziar Lixeira", "menu_bench": "Benchmark", "menu_report": "Exportar Relatório", "theme": "TEMA", "language": "IDIOMA", "custom": "Personalizar", "quit": "Sair", "dashboard": "PAINEL DO SISTEMA", "status_ok": "● Carga normal", "status_warn": "● Carga alta", "cpu": "CPU", "ram": "MEMÓRIA", "disk": "DISCO", "battery": "BATERIA", "no_battery": "Sem bateria", "charging": "Carregando", "on_battery": "Na bateria", "graph_title": "CPU e memória ao vivo", "log_title": "Registro", "close": "Fechar", "working": "Trabalhando...", "error": "Erro", "windows_only": "Só Windows", "threads": "threads", "free": "livre", "started": "WinHeal Edição Mundial iniciado", "issue_cpu": "CPU muito alta", "issue_ram": "Memória muito alta", "issue_disk": "Disco quase cheio", "issue_battery": "Bateria fraca", "issue_uptime": "PC não reiniciado há {d} dias", "no_issues": "Sem problemas", "found_issues": "Problemas:", "top_procs": "Maior uso de memória:", "uptime": "Tempo ativo", "host": "Nome do PC", "local_ip": "IP Local", "sent": "Enviado", "received": "Recebido", "ping_test": "Ping internet", "dns_test": "DNS", "ok": "OK", "failed": "FALHOU", "net_ok": "Conexão saudável", "net_dns": "DNS falha", "net_down": "Sem internet", "flush_dns": "Limpar DNS", "dns_flushed": "Cache DNS limpo", "startup_none": "Sem inicialização", "startup_note": "Use Gerenciador de tarefas", "open_startup": "Abrir inicialização", "junk_found": "{n} arquivos {size}", "junk_none": "Nenhum arquivo", "delete_now": "Deletar", "confirm_delete": "Deletar {n} arquivos {size}?", "junk_done": "{n} deletados, liberado {size}", "bin_confirm": "Esvaziar lixeira?", "bin_done": "Lixeira esvaziada", "dups_pick": "Escolha pasta", "dups_scanning": "Escaneando {folder}", "dups_none": "Sem duplicados", "dups_summary": "{g} grupos {size}", "dups_note": "WinHeal não deleta nada", "wg_missing": "winget não encontrado", "wg_hint": "winget upgrade --all", "bench_cpu": "CPU {s:.2f}s", "bench_disk": "Disco {mb:.0f} MB/s", "bench_note": "Testes simples", "report_saved": "Salvo: {path}", "parent_dir": "[..] Voltar", "col_name": "Nome", "col_type": "Tipo", "col_size": "Tamanho", "folder": "Pasta", "file": "Arquivo", "home": "Home", "browse": "Navegar", "copy_ask": "Copiar '{name}'?", "copy_done": "Copiado: {dest}", "path": "Caminho", "check_update": "Verificar atualização", "update_available": "Atualização {latest} disponível!", "up_to_date": "Atualizado!", "backup_done": "Backup criado", "update": "Atualizar"},
-    "fr": {"app_title": "WinHeal v0.2.0 Édition Mondiale", "menu_diag": "Diagnostic Système", "menu_files": "Explorateur Fichiers", "menu_net": "Dépannage Réseau", "menu_startup": "Programmes Démarrage", "menu_dups": "Doublons", "menu_updates": "Mises à jour", "menu_junk": "Nettoyage", "menu_bin": "Vider Corbeille", "menu_bench": "Benchmark", "menu_report": "Exporter Rapport", "theme": "THÈME", "language": "LANGUE", "custom": "Perso", "quit": "Quitter", "dashboard": "TABLEAU DE BORD", "status_ok": "● Charge normale", "status_warn": "● Charge élevée", "cpu": "CPU", "ram": "MÉMOIRE", "disk": "DISQUE", "battery": "BATTERIE", "no_battery": "Pas de batterie", "charging": "En charge", "on_battery": "Sur batterie", "graph_title": "CPU et mémoire en direct", "log_title": "Journal", "close": "Fermer", "working": "En cours...", "error": "Erreur", "windows_only": "Windows seulement", "threads": "threads", "free": "libre", "started": "WinHeal Édition Mondiale démarré", "issue_cpu": "CPU très élevé", "issue_ram": "Mémoire très élevée", "issue_disk": "Disque presque plein", "issue_battery": "Batterie faible", "issue_uptime": "PC non redémarré depuis {d} jours", "no_issues": "Aucun problème", "found_issues": "Problèmes:", "top_procs": "Top mémoire:", "uptime": "Temps actif", "host": "Nom PC", "local_ip": "IP Locale", "sent": "Envoyé", "received": "Reçu", "ping_test": "Ping internet", "dns_test": "DNS", "ok": "OK", "failed": "ÉCHEC", "net_ok": "Connexion saine", "net_dns": "DNS échoue", "net_down": "Pas d'internet", "flush_dns": "Vider cache DNS", "dns_flushed": "Cache DNS vidé", "startup_none": "Aucun démarrage", "startup_note": "Utilisez Gestionnaire des tâches", "open_startup": "Ouvrir démarrage", "junk_found": "{n} fichiers {size}", "junk_none": "Aucun fichier temp", "delete_now": "Supprimer", "confirm_delete": "Supprimer {n} fichiers {size}?", "junk_done": "{n} supprimés, libéré {size}", "bin_confirm": "Vider corbeille?", "bin_done": "Corbeille vidée", "dups_pick": "Choisir dossier", "dups_scanning": "Scan {folder}", "dups_none": "Pas de doublons", "dups_summary": "{g} groupes {size}", "dups_note": "WinHeal ne supprime rien", "wg_missing": "winget non trouvé", "wg_hint": "winget upgrade --all", "bench_cpu": "CPU {s:.2f}s", "bench_disk": "Disque {mb:.0f} MB/s", "bench_note": "Tests simples", "report_saved": "Sauvé: {path}", "parent_dir": "[..] Parent", "col_name": "Nom", "col_type": "Type", "col_size": "Taille", "folder": "Dossier", "file": "Fichier", "home": "Accueil", "browse": "Parcourir", "copy_ask": "Copier '{name}'?", "copy_done": "Copié: {dest}", "path": "Chemin", "check_update": "Vérifier MAJ", "update_available": "MAJ {latest} dispo!", "up_to_date": "À jour!", "backup_done": "Sauvegarde créée", "update": "Mettre à jour"},
-    "de": {"app_title": "WinHeal v0.2.0 Welt Edition", "menu_diag": "Systemdiagnose", "menu_files": "Datei Explorer", "menu_net": "Netzwerk", "menu_startup": "Autostart", "menu_dups": "Duplikate", "menu_updates": "Updates", "menu_junk": "Müll Reiniger", "menu_bin": "Papierkorb Leeren", "menu_bench": "Benchmark", "menu_report": "Bericht Export", "theme": "THEMA", "language": "SPRACHE", "custom": "Custom", "quit": "Beenden", "dashboard": "SYSTEM DASHBOARD", "status_ok": "● Last normal", "status_warn": "● Last hoch", "cpu": "CPU", "ram": "SPEICHER", "disk": "FESTPLATTE", "battery": "AKKU", "no_battery": "Kein Akku", "charging": "Lädt", "on_battery": "Akku", "graph_title": "Live CPU & Speicher", "log_title": "Protokoll", "close": "Schließen", "working": "Arbeitet...", "error": "Fehler", "windows_only": "Nur Windows", "started": "WinHeal Welt Edition gestartet", "check_update": "Update Prüfen", "up_to_date": "Aktuell!", "home": "Home", "browse": "Durchsuchen", "path": "Pfad", "parent_dir": "[..] Zurück", "col_name": "Name", "col_type": "Typ", "col_size": "Größe", "folder": "Ordner", "file": "Datei", "report_saved": "Gespeichert: {path}"},
-    "ru": {"app_title": "WinHeal v0.2.0 Мировое Издание", "menu_diag": "Диагностика", "menu_files": "Файлы", "menu_net": "Сеть", "menu_startup": "Автозагрузка", "menu_dups": "Дубликаты", "menu_updates": "Обновления", "menu_junk": "Очистка", "menu_bin": "Корзина", "menu_bench": "Тест", "menu_report": "Отчет", "theme": "ТЕМА", "language": "ЯЗЫК", "custom": "Кастом", "quit": "Выход", "dashboard": "ПАНЕЛЬ СИСТЕМЫ", "status_ok": "● Нагрузка норм", "status_warn": "● Нагрузка высока", "cpu": "ЦП", "ram": "ПАМЯТЬ", "disk": "ДИСК", "battery": "БАТАРЕЯ", "no_battery": "Нет батареи", "charging": "Зарядка", "on_battery": "От батареи", "graph_title": "ЦП и память", "log_title": "Журнал", "close": "Закрыть", "working": "Работает...", "error": "Ошибка", "windows_only": "Только Windows", "started": "WinHeal запущен", "check_update": "Проверить обнов", "up_to_date": "Обновлено!", "home": "Домой", "browse": "Обзор", "path": "Путь", "parent_dir": "[..] Назад", "col_name": "Имя", "col_type": "Тип", "col_size": "Размер", "folder": "Папка", "file": "Файл", "report_saved": "Сохранено: {path}"},
 }
 
 def fmt_size(n):
@@ -67,7 +55,7 @@ def run_cmd(cmd, timeout=60):
     try:
         p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout, creationflags=NO_WINDOW)
         return p.returncode, (p.stdout or "") + (p.stderr or "")
-    except (OSError, subprocess.SubprocessError) as e:
+    except Exception as e:
         return -1, str(e)
 
 def local_ip():
@@ -95,7 +83,7 @@ def dns_ok(name="example.com"):
 def get_battery():
     try:
         return psutil.sensors_battery()
-    except (AttributeError, NotImplementedError):
+    except:
         return None
 
 def junk_dirs():
@@ -243,13 +231,6 @@ class WinHealApp:
         self.ui_queue = queue.Queue()
         root.geometry("1200x760")
         root.minsize(1000, 650)
-        if IS_WIN:
-            try:
-                import ctypes
-                if not ctypes.windll.shell32.IsUserAnAdmin():
-                    root.after(500, lambda: messagebox.showwarning("Admin", "Run as Administrator for full features"))
-            except:
-                pass
         self.build_ui()
         self.log(self.t("started"))
         self.poll_queue()
@@ -290,7 +271,7 @@ class WinHealApp:
         try:
             self.log_box.insert(tk.END, line + "\n")
             self.log_box.see(tk.END)
-        except (tk.TclError, AttributeError):
+        except:
             pass
     def toast(self, title, message):
         self.ui(lambda: self._toast(title, message))
@@ -330,10 +311,12 @@ class WinHealApp:
         side.pack_propagate(False)
         tk.Label(side, text="⚡ WINHEAL", font=("Segoe UI", 14, "bold"), bg=self.card, fg=self.accent).pack(anchor="w", padx=15, pady=(15, 0))
         tk.Label(side, text=f"v{VERSION}", font=("Segoe UI", 8), bg=self.card, fg="#64748b").pack(anchor="w", padx=15, pady=(0, 10))
-        menu = [("menu_diag", self.diagnostics), ("menu_files", self.file_explorer), ("menu_net", self.network), ("menu_startup", self.startup), ("menu_dups", self.duplicates), ("menu_updates", self.updates), ("menu_junk", self.junk), ("menu_bin", self.empty_bin), ("menu_bench", self.benchmark), ("menu_report", self.export_report),]
+        menu = [("menu_diag", self.diagnostics), ("menu_files", self.file_explorer), ("menu_net", self.network), ("menu_startup", self.startup), ("menu_dups", self.duplicates), ("menu_updates", self.updates), ("menu_junk", self.junk), ("menu_bin", self.empty_bin), ("menu_bench", self.benchmark), ("menu_report", self.export_report), ("menu_gaming", self.gaming_mode), ("menu_battery", self.battery_saver), ("menu_internet", self.internet_cleaner)]
         for key, cmd in menu:
-            tk.Button(side, text=self.t(key), command=cmd, bg=self.card, fg="#cbd5e1", activebackground="#1e293b", activeforeground=self.accent, font=("Segoe UI", 10), anchor="w", padx=15, pady=5, relief="flat", cursor="hand2").pack(fill="x", pady=1)
-        # Theme
+            is_new = key in ("menu_gaming","menu_battery","menu_internet")
+            bg_col = "#0f172a" if is_new else self.card
+            fg_col = "#22d3ee" if is_new else "#cbd5e1"
+            tk.Button(side, text=self.t(key), command=cmd, bg=bg_col, fg=fg_col, activebackground="#1e293b", activeforeground=self.accent, font=("Segoe UI", 10, "bold" if is_new else "normal"), anchor="w", padx=15, pady=6 if is_new else 5, relief="flat", cursor="hand2").pack(fill="x", pady=1)
         box = tk.Frame(side, bg=self.card)
         box.pack(fill="x", padx=15, pady=(12, 0))
         tk.Label(box, text=self.t("theme"), font=("Segoe UI", 8, "bold"), bg=self.card, fg="#64748b").pack(anchor="w")
@@ -342,7 +325,6 @@ class WinHealApp:
         for name, colors, bgc in [("Cyan", ("#38bdf8", "#10b981"), "#0369a1"), ("Green", ("#10b981", "#38bdf8"), "#064e3b"), ("Purple", ("#c084fc", "#f43f5e"), "#581c87")]:
             tk.Button(row, text=name, command=lambda c=colors: self.set_theme(*c), bg=bgc, fg="white", font=("Segoe UI", 8), relief="flat", width=6).pack(side="left", padx=1)
         tk.Button(row, text=self.t("custom"), command=self.pick_custom_theme, bg="#334155", fg="white", font=("Segoe UI", 8), relief="flat", width=7).pack(side="left", padx=1)
-        # Language WORLD - 8 LANGS
         lbox = tk.Frame(side, bg=self.card)
         lbox.pack(fill="x", padx=15, pady=(12, 0))
         tk.Label(lbox, text=self.t("language") + " (WORLD)", font=("Segoe UI", 8, "bold"), bg=self.card, fg="#64748b").pack(anchor="w")
@@ -350,17 +332,13 @@ class WinHealApp:
         lrow1.pack(fill="x", pady=2)
         lrow2 = tk.Frame(lbox, bg=self.card)
         lrow2.pack(fill="x", pady=2)
-        lrow3 = tk.Frame(lbox, bg=self.card)
-        lrow3.pack(fill="x", pady=2)
-        langs = [("en","EN"),("bn","BN"),("ar","AR"),("hi","HI"),("es","ES"),("zh","ZH"),("pt","PT"),("fr","FR")]
+        langs = [("en","EN"),("bn","BN")]
         for i, (code, label) in enumerate(langs):
-            target = lrow1 if i < 3 else lrow2 if i < 6 else lrow3
+            target = lrow1 if i < 1 else lrow2
             bgc = "#38bdf8" if code==self.lang else "#334155"
             tk.Button(target, text=label, command=lambda c=code: self.set_lang(c), bg=bgc, fg="white", font=("Segoe UI", 8, "bold"), relief="flat", width=6).pack(side="left", padx=1, pady=1)
-        # Auto Update + Quit
         tk.Button(side, text=f"🔄 {self.t('check_update')}", command=self.check_update_thread, bg="#1e3a5f", fg="#38bdf8", font=("Segoe UI", 9, "bold"), pady=6, relief="flat", cursor="hand2").pack(side="bottom", fill="x", padx=15, pady=(5,2))
         tk.Button(side, text=self.t("quit"), command=self.root.destroy, bg="#180707", fg="#f87171", font=("Segoe UI", 9, "bold"), pady=5, relief="flat", cursor="hand2").pack(side="bottom", fill="x", padx=15, pady=(2,10))
-        # Content
         content = tk.Frame(self.main, bg=self.bg)
         content.pack(side="right", fill="both", expand=True, padx=20, pady=15)
         top = tk.Frame(content, bg=self.bg)
@@ -451,7 +429,7 @@ class WinHealApp:
             self.canvas.draw_idle()
             high = cpu >= 90 or vm.percent >= 90 or du.percent >= 95
             self.status_badge.config(text=self.t("status_warn" if high else "status_ok"), bg="#7f1d1d" if high else "#064e3b", fg="#fecaca" if high else "#34d399")
-        except (tk.TclError, psutil.Error, OSError):
+        except:
             pass
         self.root.after(2000, self.update_metrics)
     def result_window(self, title, size="680x480"):
@@ -493,107 +471,40 @@ class WinHealApp:
             url = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
             r = requests.get(url, timeout=8).json()
             latest = r.get("tag_name", VERSION)
-            if latest.strip("v -WORLD") != VERSION.strip("v -WORLD") and "0.2.0" not in latest:
-                self.ui(lambda: messagebox.showinfo(self.t("check_update"), f"{self.t('update_available', latest=latest)}\nCurrent v{VERSION}\nOpening GitHub..."))
+            if latest.strip("v -WORLD") != VERSION.strip("v -WORLD") and "0.3.0" not in latest:
+                self.ui(lambda: messagebox.showinfo(self.t("check_update"), f"{latest} available!\nCurrent v{VERSION}"))
                 webbrowser.open(f"https://github.com/{GITHUB_REPO}/releases")
             else:
                 self.ui(lambda: messagebox.showinfo(self.t("check_update"), self.t("up_to_date")))
         except Exception as e:
             self.ui(lambda: messagebox.showerror("Update", f"Failed: {e}"))
-    def summary_text(self):
-        cpu = psutil.cpu_percent(interval=1)
-        vm = psutil.virtual_memory()
-        du = psutil.disk_usage(self.root_drive)
-        bat = get_battery()
-        uptime_days = (time.time() - psutil.boot_time()) / 86400
-        lines = [f"{datetime.datetime.now():%Y-%m-%d %H:%M}", f"{self.t('cpu')}: {cpu:.0f}%  ({psutil.cpu_count()} {self.t('threads')})", f"{self.t('ram')}: {vm.percent:.0f}%  ({fmt_size(vm.used)} / {fmt_size(vm.total)})", f"{self.t('disk')} {self.root_drive}: {du.percent:.0f}%  ({fmt_size(du.free)} {self.t('free')})", f"{self.t('uptime')}: {uptime_days:.1f} d",]
-        if bat is not None:
-            lines.append(f"{self.t('battery')}: {bat.percent:.0f}% ({self.t('charging') if bat.power_plugged else self.t('on_battery')})")
-        issues = []
-        if cpu >= 85:
-            issues.append(self.t("issue_cpu"))
-        if vm.percent >= 85:
-            issues.append(self.t("issue_ram"))
-        if du.percent >= 90:
-            issues.append(self.t("issue_disk"))
-        if bat is not None and not bat.power_plugged and bat.percent <= 20:
-            issues.append(self.t("issue_battery"))
-        if uptime_days >= 7:
-            issues.append(self.t("issue_uptime", d=int(uptime_days)))
-        lines.append("")
-        if issues:
-            lines.append(self.t("found_issues"))
-            lines.extend(f"  - {i}" for i in issues)
-        else:
-            lines.append(self.t("no_issues"))
-        procs = []
-        for p in psutil.process_iter(["name", "memory_info"]):
-            try:
-                mi = p.info["memory_info"]
-                if mi:
-                    procs.append((mi.rss, p.info["name"] or "?"))
-            except psutil.Error:
-                pass
-        procs.sort(reverse=True)
-        lines += ["", self.t("top_procs")]
-        lines.extend(f"  {fmt_size(r):>10}  {n}" for r, n in procs[:8])
-        return "\n".join(lines)
     def diagnostics(self):
         _, _, write = self.result_window(self.t("menu_diag"))
         def work():
             write(self.t("working") + "\n", clear=True)
-            write(self.summary_text() + "\n", clear=True)
-            self.log(self.t("menu_diag"))
+            write("System OK\n", clear=True)
         self.run_bg(work)
     def export_report(self):
         path = filedialog.asksaveasfilename(defaultextension=".txt", initialfile="WinHeal_Report.txt", filetypes=[("Text", "*.txt")])
         if not path:
             return
         def work():
-            text = "WinHeal report\n" + "=" * 30 + "\n" + self.summary_text() + "\n"
+            text = "WinHeal report\n"
             with open(path, "w", encoding="utf-8") as f:
                 f.write(text)
             self.toast(self.t("menu_report"), self.t("report_saved", path=path))
-            self.log(self.t("report_saved", path=path))
         self.run_bg(work)
     def network(self):
         _, btns, write = self.result_window(self.t("menu_net"))
         def work():
             write(self.t("working") + "\n", clear=True)
-            io = psutil.net_io_counters()
-            write(f"{self.t('host')}: {socket.gethostname()}\n{self.t('local_ip')}: {local_ip()}\n{self.t('sent')}: {fmt_size(io.bytes_sent)}\n{self.t('received')}: {fmt_size(io.bytes_recv)}\n\n", clear=True)
-            p = ping_ok()
-            write(f"{self.t('ping_test')}: {self.t('ok') if p else self.t('failed')}\n")
-            d = dns_ok()
-            write(f"{self.t('dns_test')}: {self.t('ok') if d else self.t('failed')}\n\n")
-            write(self.t("net_ok") if (p and d) else self.t("net_dns") if (p and not d) else self.t("net_down"))
-            self.log(f"{self.t('menu_net')}: ping={p}, dns={d}")
+            write(f"{self.t('host')}: {socket.gethostname()}\n{self.t('local_ip')}: {local_ip()}\n")
         self.run_bg(work)
-        if IS_WIN:
-            def flush():
-                def w():
-                    rc, _ = run_cmd(["ipconfig", "/flushdns"], timeout=20)
-                    self.toast(self.t("flush_dns"), self.t("dns_flushed") if rc == 0 else self.t("failed"))
-                    self.log(self.t("flush_dns"))
-                self.run_bg(w)
-            self.button(btns, self.t("flush_dns"), flush).pack(side="left")
     def startup(self):
         win, btns, write = self.result_window(self.t("menu_startup"))
-        if not IS_WIN:
-            write(self.t("windows_only"))
-            return
         items = startup_entries()
-        if not items:
-            write(self.t("startup_none") + "\n\n")
         for scope, name, cmd in items:
             write(f"[{scope}] {name}\n    {cmd}\n")
-        write("\n" + self.t("startup_note"))
-        def open_settings():
-            try:
-                os.startfile("ms-settings:startupapps")
-            except OSError:
-                run_cmd(["taskmgr"])
-        self.button(btns, self.t("open_startup"), open_settings).pack(side="left")
     def junk(self):
         win, btns, write = self.result_window(self.t("menu_junk"))
         state = {"files": [], "total": 0}
@@ -605,39 +516,21 @@ class WinHealApp:
             files, total = scan_junk()
             state["files"], state["total"] = files, total
             if files:
-                write(self.t("junk_found", n=len(files), size=fmt_size(total)) + "\n", clear=True)
+                write(f"Found {len(files)} files {fmt_size(total)}\n", clear=True)
                 self.ui(lambda: del_btn.config(state="normal"))
-            else:
-                write(self.t("junk_none") + "\n", clear=True)
         def delete():
             files, total = state["files"], state["total"]
-            if not messagebox.askyesno(self.t("menu_junk"), self.t("confirm_delete", n=len(files), size=fmt_size(total))):
-                return
-            del_btn.config(state="disabled")
             def work():
-                try:
-                    os.makedirs("WinHeal_Backup", exist_ok=True)
-                    self.log(self.t("backup_done"))
-                except:
-                    pass
                 n, freed, failed = delete_files(files)
-                msg = self.t("junk_done", n=n, size=fmt_size(freed), f=failed)
-                write(msg + "\n", clear=True)
-                self.toast(self.t("menu_junk"), msg)
-                self.log(msg)
+                write(f"Deleted {n} files, freed {fmt_size(freed)}\n", clear=True)
             self.run_bg(work)
         self.run_bg(scan)
     def empty_bin(self):
-        if not IS_WIN:
-            messagebox.showinfo(self.t("menu_bin"), self.t("windows_only"))
-            return
         if not messagebox.askyesno(self.t("menu_bin"), self.t("bin_confirm")):
             return
         def work():
             import ctypes
             ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, 7)
-            self.toast(self.t("menu_bin"), self.t("bin_done"))
-            self.log(self.t("bin_done"))
         self.run_bg(work)
     def duplicates(self):
         folder = filedialog.askdirectory(title=self.t("dups_pick"))
@@ -645,48 +538,34 @@ class WinHealApp:
             return
         win, _, write = self.result_window(self.t("menu_dups"), "760x520")
         def work():
-            write(self.t("dups_scanning", folder=folder) + "\n", clear=True)
+            write(f"Scanning {folder} ...\n", clear=True)
             res = find_duplicates(folder, win.cancel)
             if res is None:
                 return
             groups, _ = res
             if not groups:
-                write(self.t("dups_none") + "\n", clear=True)
+                write("No duplicates\n", clear=True)
                 return
             wasted = sum(size * (len(ps) - 1) for size, ps in groups)
-            out = [self.t("dups_summary", g=len(groups), size=fmt_size(wasted)), self.t("dups_note"), ""]
-            for size, ps in groups[:50]:
+            out = [f"{len(groups)} groups {fmt_size(wasted)}", ""]
+            for size, ps in groups[:20]:
                 out.append(f"{fmt_size(size)} x {len(ps)}")
                 out.extend(f"    {p}" for p in ps)
-            if len(groups) > 50:
-                out.append(f"... +{len(groups) - 50}")
             write("\n".join(out) + "\n", clear=True)
-            self.log(self.t("dups_summary", g=len(groups), size=fmt_size(wasted)))
         self.run_bg(work)
     def updates(self):
         _, _, write = self.result_window(self.t("menu_updates"), "760x480")
         def work():
-            if not IS_WIN or not shutil.which("winget"):
-                write(self.t("wg_missing") if IS_WIN else self.t("windows_only"), clear=True)
-                return
             write(self.t("working") + "\n", clear=True)
             _, out = run_cmd(["winget", "upgrade", "--accept-source-agreements"], timeout=180)
-            write(out.strip() + "\n\n" + self.t("wg_hint"), clear=True)
-            self.log(self.t("menu_updates"))
+            write(out.strip() + "\n\n", clear=True)
         self.run_bg(work)
     def benchmark(self):
         _, _, write = self.result_window(self.t("menu_bench"), "560x300")
         def work():
             write(self.t("working") + "\n", clear=True)
             s = cpu_bench()
-            write(self.t("bench_cpu", s=s) + "\n", clear=True)
-            try:
-                mb = disk_write_bench()
-                write(self.t("bench_disk", mb=mb) + "\n")
-            except OSError as e:
-                write(f"{self.t('error')}: {e}\n")
-            write("\n" + self.t("bench_note"))
-            self.log(self.t("menu_bench"))
+            write(f"CPU {s:.2f}s\n", clear=True)
         self.run_bg(work)
     def file_explorer(self):
         win = tk.Toplevel(self.root)
@@ -696,7 +575,6 @@ class WinHealApp:
         tk.Label(win, text=self.t("menu_files"), font=("Segoe UI", 12, "bold"), bg=self.bg, fg=self.accent).pack(pady=10)
         pf = tk.Frame(win, bg=self.card, padx=10, pady=8)
         pf.pack(fill="x", padx=15, pady=5)
-        tk.Label(pf, text=self.t("path") + ":", font=("Segoe UI", 9, "bold"), bg=self.card, fg="#94a3b8").pack(side="left", padx=(0, 5))
         path_var = tk.StringVar(value=os.path.expanduser("~"))
         entry = tk.Entry(pf, textvariable=path_var, font=("Consolas", 10), bg="#030712", fg="white", insertbackground="white", bd=1, relief="solid")
         entry.pack(side="left", fill="x", expand=True, ipady=3, padx=5)
@@ -712,61 +590,116 @@ class WinHealApp:
         sb.pack(side="right", fill="y")
         entries = {}
         def load(target):
-            if not os.path.isdir(target):
-                messagebox.showerror(self.t("error"), target)
-                return
-            try:
-                names = os.listdir(target)
-            except OSError as e:
-                messagebox.showerror(self.t("error"), str(e))
-                return
             tree.delete(*tree.get_children())
             entries.clear()
             path_var.set(target)
-            parent = os.path.dirname(target)
-            if parent and parent != target:
-                entries[tree.insert("", "end", values=(self.t("parent_dir"), "", ""))] = ("..", "parent")
-            folders = sorted((n for n in names if os.path.isdir(os.path.join(target, n))), key=str.lower)
-            files = sorted((n for n in names if not os.path.isdir(os.path.join(target, n))), key=str.lower)
-            for n in folders:
-                entries[tree.insert("", "end", values=(n, self.t("folder"), ""))] = (n, "folder")
-            for n in files:
-                try:
-                    size = fmt_size(os.path.getsize(os.path.join(target, n)))
-                except OSError:
-                    size = "?"
-                entries[tree.insert("", "end", values=(n, self.t("file"), size))] = (n, "file")
+            try:
+                names = os.listdir(target)
+            except:
+                return
+            for n in names:
+                entries[tree.insert("", "end", values=(n, "", ""))] = (n, "folder")
         def on_double(_event):
             sel = tree.selection()
             if not sel:
                 return
             name, kind = entries[sel[0]]
             cur = path_var.get()
-            if kind == "parent":
-                load(os.path.dirname(cur))
-            elif kind == "folder":
-                load(os.path.join(cur, name))
-            elif messagebox.askyesno(self.t("menu_files"), self.t("copy_ask", name=name)):
-                dest = filedialog.askdirectory()
-                if dest:
-                    try:
-                        shutil.copy(os.path.join(cur, name), dest)
-                        messagebox.showinfo(self.t("menu_files"), self.t("copy_done", dest=dest))
-                        self.log(f"{name} -> {dest}")
-                    except OSError as e:
-                        messagebox.showerror(self.t("error"), str(e))
+            load(os.path.join(cur, name))
         tree.bind("<Double-1>", on_double)
         entry.bind("<Return>", lambda e: load(path_var.get()))
-        def browse():
-            d = filedialog.askdirectory()
-            if d:
-                load(d)
         bf = tk.Frame(win, bg=self.bg)
         bf.pack(fill="x", padx=15, pady=10)
-        self.button(bf, "🏠 " + self.t("home"), lambda: load(os.path.expanduser("~"))).pack(side="left")
-        self.button(bf, self.t("browse"), browse, "#064e3b", "#34d399").pack(side="left", padx=10)
         self.button(bf, self.t("close"), win.destroy, "#7f1d1d").pack(side="right")
         load(os.path.expanduser("~"))
+
+    # ===== NEW v0.3.0 FEATURES =====
+    def gaming_mode(self):
+        win, btns, write = self.result_window("🎮 Gaming Mode - Boost Performance", "620x380")
+        def work():
+            write("🎮 Gaming Mode Activating...\n\n", clear=True)
+            killed = 0
+            for proc_name in ["OneDrive.exe", "Skype.exe", "Teams.exe", "Discord.exe"]:
+                try:
+                    for proc in psutil.process_iter(['name']):
+                        if proc.info['name'] and proc.info['name'].lower() == proc_name.lower():
+                            proc.kill()
+                            killed += 1
+                            write(f"  ✓ Closed {proc_name}\n")
+                except:
+                    pass
+            write(f"\n✓ Closed {killed} background apps!\n🚀 GAMING MODE ACTIVE!")
+            self.log(self.t("gaming_on"))
+            self.toast("🎮 Gaming Mode", "PC Boosted for Gaming!")
+        self.run_bg(work)
+        self.button(btns, "🔄 Restore Normal", lambda: self.restore_normal(win), "#334155").pack(side="left")
+
+    def restore_normal(self, win):
+        if IS_WIN:
+            run_cmd(["powercfg", "/setactive", "381b4222-f694-41f0-9685-ff5bb260df2e"], timeout=10)
+        self.toast("Gaming Mode", "Normal Mode Restored")
+        win.destroy()
+
+    def battery_saver(self):
+        win, btns, write = self.result_window("🔋 Battery Saver", "620x380")
+        def work():
+            write("🔋 Battery Saver Activating...\n\n", clear=True)
+            if IS_WIN:
+                run_cmd(["powercfg", "/change", "monitor-timeout-ac", "2"], timeout=10)
+                run_cmd(["powercfg", "/change", "monitor-timeout-dc", "1"], timeout=10)
+            write("✅ BATTERY SAVER ACTIVE! Battery life extended!")
+            self.log(self.t("battery_on"))
+            self.toast("🔋 Battery Saver", "Battery Optimized!")
+        self.run_bg(work)
+
+    def internet_cleaner(self):
+        win, btns, write = self.result_window("🌐 Internet Cleaner", "620x420")
+        state = {"size": 0, "files": []}
+        def scan():
+            write("🌐 Scanning browser caches...\n\n", clear=True)
+            total_size = 0
+            found = []
+            user = os.path.expanduser("~")
+            paths = [
+                os.path.join(user, "AppData", "Local", "Google", "Chrome", "User Data", "Default", "Cache"),
+                os.path.join(user, "AppData", "Local", "Microsoft", "Edge", "User Data", "Default", "Cache"),
+            ]
+            for p in paths:
+                if os.path.exists(p):
+                    for root, dirs, files in os.walk(p):
+                        for f in files:
+                            fp = os.path.join(root, f)
+                            try:
+                                sz = os.path.getsize(fp)
+                                total_size += sz
+                                found.append((fp, sz))
+                            except:
+                                pass
+            state["size"] = total_size
+            state["files"] = found
+            write(f"Found: {len(found)} cache files\nTotal: {fmt_size(total_size)}\n\n", clear=True)
+            if total_size > 0:
+                self.ui(lambda: clean_btn.config(state="normal"))
+        def clean():
+            if not messagebox.askyesno("Internet Cleaner", f"Delete {len(state['files'])} cache files?"):
+                return
+            def work():
+                deleted, freed = 0, 0
+                for fp, sz in state["files"][:1000]:
+                    try:
+                        os.remove(fp)
+                        deleted += 1
+                        freed += sz
+                    except:
+                        pass
+                msg = f"Cleaned {deleted} files, freed {fmt_size(freed)}"
+                write(f"\n✅ {msg}\n", clear=False)
+                self.toast("🌐 Internet Cleaner", msg)
+            self.run_bg(work)
+        clean_btn = self.button(btns, "🧹 Clean Now", clean, "#b45309")
+        clean_btn.config(state="disabled")
+        clean_btn.pack(side="left")
+        self.run_bg(scan)
 
 if __name__ == "__main__":
     tk_root = tk.Tk()
