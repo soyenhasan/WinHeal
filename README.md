@@ -1,51 +1,36 @@
-# ⚡ WinHeal - Windows System Care Tool
+# WinHeal AI 🌍 World Edition v0.2.0
 
-> **Version 0.1.1 SAFE** - Cold AI Verified, No Syntax Errors ✅  
-> A lightweight, real system care tool for Windows - built with Python
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/soyenhasan/WinHeal-AI?label=Version&color=blue&style=for-the-badge" />
+  <img src="https://img.shields.io/github/downloads/soyenhasan/WinHeal-AI/total?color=green&style=for-the-badge" />
+</p>
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![Platform](https://img.shields.io/badge/Platform-Windows-0078D6)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Safe](https://img.shields.io/badge/Safe-v0.1.1-brightgreen)
+### ⚡ World's Fastest Free PC Cleaner - Now in 6 Languages!
 
-### 🌐 Languages: English + বাংলা
-
----
-
-## ✨ Features
-
-| Feature | Description |
-| :--- | :--- |
-| **System Diagnostics** | Real-time CPU, RAM, Disk, Battery + health issues detection |
-| **File & Drive Explorer** | Custom file manager with copy support |
-| **Network Troubleshooter** | Ping, DNS check, Flush DNS |
-| **Startup Programs** | Read-only view of Windows Run keys (safe) |
-| **Duplicate Finder** | SHA-256 based duplicate detection |
-| **Junk Cleaner** | Cleans only temp files older than 24h (SAFE) |
-| **Recycle Bin** | One-click empty with confirmation |
-| **Quick Benchmark** | CPU & Disk write speed test |
-| **Live Dashboard** | CPU & Memory graph + Activity log |
+<p align="center">
+  <a href="https://github.com/soyenhasan/WinHeal-AI/releases/latest">
+    <img src="https://img.shields.io/badge/⬇️_Download-WinHeal_World.exe-00D26A?style=for-the-badge&logo=windows" />
+  </a>
+</p>
 
 ---
 
-## 🛡️ v0.1.1 SAFE - What's Fixed
+### 🌐 6 Languages
+🇧🇩 বাংলা | 🇺🇸 English | 🇸🇦 العربية | 🇮🇳 हिन्दी | 🇪🇸 Español | 🇨🇳 中文
 
-- ✅ **Junk Cleaner Safety**: Validates TEMP path must contain `temp` keyword
-- ✅ **Admin Check**: Shows warning if not run as Administrator
-- ✅ **Memory Leak Fix**: Matplotlib figure properly closed on theme change
-- ✅ **Production Ready**: Tested, no fake simulation
+### 🚀 What's New in World Edition
+✅ Junk Cleaner - Deep Clean
+✅ RAM Booster - 1 Click Speed
+✅ PC Optimizer
+✅ System Benchmark - NEW
+✅ Auto Update Checker - NEW
+
+### 📥 Download
+**[Click Here to Download Latest Version](https://github.com/soyenhasan/WinHeal-AI/releases/latest)**
+
+No Installation Needed - Just Double Click!
+
+### 💻 For Windows 10 / 11 (64-bit)
 
 ---
-
-## 🚀 Installation
-
-```bash
-# Clone
-git clone https://github.com/soyenhasan/WinHeal-AI.git
-cd WinHeal-AI
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run
-python main.py
+<p align="center">Made with ❤️ by NAYEM HASAN | ⭐ Star if you like it!</p>
