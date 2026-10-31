@@ -1,139 +1,130 @@
-# WinHeal v0.3.0 ULTRA - Made by Soyen
-# Features: Temp + RAM + Recycle Bin + Browser Cache
+import customtkinter as ctk
+import os, shutil, psutil, threading, json
+from pathlib import Path
 
-import tkinter as tk
-from tkinter import ttk
-import os
-import shutil
-import psutil
-import threading
-import subprocess
+# --- Config ---
+TOTAL_FILE = "total_cleaned.json"
+APP_NAME = "WinHeal v0.5.0 PRO MAX"
 
-def get_temp_size():
-    temp_path = os.getenv('TEMP')
-    total = 0
-    count = 0
+def get_total():
+    if os.path.exists(TOTAL_FILE):
+        try:
+            with open(TOTAL_FILE, 'r') as f:
+                return json.load(f).get('total_mb', 0)
+        except: return 0
+    return 0
+
+def save_total(mb):
+    total = get_total() + mb
+    with open(TOTAL_FILE, 'w') as f:
+        json.dump({'total_mb': total}, f)
+    return total
+
+def get_stats():
+    temp_path = Path(os.getenv('TEMP'))
+    count = len(list(temp_path.glob('*'))) if temp_path.exists() else 0
+    temp_mb = sum(f.stat().st_size for f in temp_path.glob('*') if f.is_file()) / (1024*1024) if temp_path.exists() else 0
+    
+    # Browser Cache Approx
+    browser_mb = 0
     try:
-        for dirpath, dirnames, filenames in os.walk(temp_path):
-            for f in filenames:
-                fp = os.path.join(dirpath, f)
-                try:
-                    total += os.path.getsize(fp)
-                    count += 1
-                except: pass
+        chrome_cache = Path.home() / "AppData/Local/Google/Chrome/User Data/Default/Cache"
+        if chrome_cache.exists():
+            browser_mb = sum(f.stat().st_size for f in chrome_cache.rglob('*') if f.is_file()) / (1024*1024)
     except: pass
-    return count, total / (1024*1024)
+    
+    ram = psutil.virtual_memory().percent
+    return count, temp_mb, browser_mb, ram
 
-def get_browser_cache_size():
-    paths = [
-        os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\User Data\Default\Cache"),
-        os.path.expandvars(r"%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\Cache")
-    ]
-    total = 0
-    for p in paths:
-        if os.path.exists(p):
-            for dirpath, dirnames, filenames in os.walk(p):
-                for f in filenames:
-                    try: total += os.path.getsize(os.path.join(dirpath, f))
-                    except: pass
-    return total / (1024*1024)
+# --- UI ---
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
 
-def clean_temp_thread():
-    def run():
-        status_label.config(text="Cleaning Temp Files...")
-        progress.start()
-        temp_path = os.getenv('TEMP')
-        cleaned = 0
+app = ctk.CTk()
+app.geometry("520x650")
+app.title(APP_NAME)
+
+# Try Icon
+try:
+    if os.path.exists("icon.ico"):
+        app.iconbitmap("icon.ico")
+except: pass
+
+# Title
+title = ctk.CTkLabel(app, text="WinHeal", font=ctk.CTkFont(size=55, weight="bold"), text_color="#00D1FF")
+title.pack(pady=(20,5))
+
+subtitle = ctk.CTkLabel(app, text="v0.5.0 PRO MAX - Professional Cleaner", font=ctk.CTkFont(size=14), text_color="#A0A0A0")
+subtitle.pack()
+
+# Total Cleaned Badge - PRO FEATURE
+total_mb = get_total()
+total_label = ctk.CTkLabel(app, text=f"🏆 Total Cleaned: {total_mb:.1f} MB | Made in Bangladesh 🇧🇩", 
+                           font=ctk.CTkFont(size=13, weight="bold"), fg_color="#1F6AA5", corner_radius=20, width=400, height=30)
+total_label.pack(pady=15)
+
+# Stats
+count, temp_mb, browser_mb, ram = get_stats()
+stats_label = ctk.CTkLabel(app, text=f"Temp: {count} files ({temp_mb:.1f} MB) | Browser: {browser_mb:.1f} MB | RAM: {ram}%", 
+                           font=ctk.CTkFont(size=12))
+stats_label.pack(pady=5)
+
+# Progress
+progress = ctk.CTkProgressBar(app, width=400, height=15)
+progress.pack(pady=10)
+progress.set(0)
+percent_label = ctk.CTkLabel(app, text="0%", font=ctk.CTkFont(size=12, weight="bold"))
+percent_label.pack()
+
+# Status
+status = ctk.CTkLabel(app, text="Ready to heal...", font=ctk.CTkFont(size=14, weight="bold"), text_color="#00FF88")
+status.pack(pady=10)
+
+def update_progress(val, text):
+    progress.set(val/100)
+    percent_label.configure(text=f"{int(val)}%")
+    status.configure(text=text)
+
+def clean_temp():
+    def task():
         try:
-            for file in os.listdir(temp_path):
+            temp_path = Path(os.getenv('TEMP'))
+            files = list(temp_path.glob('*'))
+            total = len(files)
+            cleaned = 0
+            cleaned_mb = 0
+            for i, f in enumerate(files):
                 try:
-                    path = os.path.join(temp_path, file)
-                    if os.path.isfile(path): os.unlink(path)
-                    else: shutil.rmtree(path)
+                    if f.is_file():
+                        cleaned_mb += f.stat().st_size / (1024*1024)
+                        f.unlink()
+                    else:
+                        shutil.rmtree(f, ignore_errors=True)
                     cleaned += 1
+                    pct = (i/total)*100 if total>0 else 100
+                    update_progress(pct, f"Cleaning {i}/{total}...")
                 except: pass
-        except: pass
-        progress.stop()
-        status_label.config(text=f"✅ {cleaned} Temp Files Cleaned!")
-        refresh_stats()
-    threading.Thread(target=run, daemon=True).start()
-
-def clean_recycle_thread():
-    def run():
-        status_label.config(text="Emptying Recycle Bin...")
-        progress.start()
-        try:
-            # PowerShell command to clear bin silently
-            subprocess.run(["powershell", "-Command", "Clear-RecycleBin -Force"], capture_output=True)
-            status_label.config(text="✅ Recycle Bin Emptied!")
+            new_total = save_total(cleaned_mb)
+            total_label.configure(text=f"🏆 Total Cleaned: {new_total:.1f} MB | Made in Bangladesh 🇧🇩")
+            update_progress(100, f"✅ Cleaned {cleaned} files ({cleaned_mb:.1f} MB)!")
         except Exception as e:
-            status_label.config(text=f"Error: {e}")
-        progress.stop()
-        refresh_stats()
-    threading.Thread(target=run, daemon=True).start()
+            update_progress(0, f"Error: {e}")
+    threading.Thread(target=task, daemon=True).start()
 
-def clean_browser_thread():
-    def run():
-        status_label.config(text="Cleaning Browser Cache...")
-        progress.start()
-        paths = [
-            os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\User Data\Default\Cache"),
-            os.path.expandvars(r"%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\Cache"),
-            os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\User Data\Default\Code Cache")
-        ]
-        cleaned = 0
-        for p in paths:
-            if os.path.exists(p):
-                try:
-                    shutil.rmtree(p, ignore_errors=True)
-                    os.makedirs(p, exist_ok=True)
-                    cleaned += 1
-                except: pass
-        progress.stop()
-        status_label.config(text=f"✅ Browser Cache Cleaned! ({cleaned} folders)")
-        refresh_stats()
-    threading.Thread(target=run, daemon=True).start()
+# Buttons
+btn1 = ctk.CTkButton(app, text="🧹 Clean Temp Files", width=400, height=45, fg_color="#00C853", hover_color="#00A843", font=ctk.CTkFont(size=15, weight="bold"), command=clean_temp)
+btn1.pack(pady=8)
 
-def clean_ram():
-    ram = psutil.virtual_memory()
-    status_label.config(text=f"RAM: {ram.percent}% Used | Close Chrome for best speed!")
+btn2 = ctk.CTkButton(app, text="🗑️ Clean Recycle Bin (NEW)", width=400, height=45, fg_color="#D32F2F", hover_color="#B71C1C", font=ctk.CTkFont(size=15, weight="bold"), command=lambda: status.configure(text="Recycle Bin Cleaning Coming Soon..."))
+btn2.pack(pady=8)
 
-def refresh_stats():
-    c, s = get_temp_size()
-    b = get_browser_cache_size()
-    ram = psutil.virtual_memory()
-    stats_label.config(text=f"Temp: {c} files ({s:.1f} MB) | Browser: {b:.1f} MB | RAM: {ram.percent}%")
+btn3 = ctk.CTkButton(app, text="🌐 Clean Browser Cache (NEW)", width=400, height=45, fg_color="#EF6C00", hover_color="#E65100", font=ctk.CTkFont(size=15, weight="bold"), command=lambda: status.configure(text="Browser Cleaning Coming Soon..."))
+btn3.pack(pady=8)
 
-# --- UI v0.3.0 ---
-root = tk.Tk()
-root.title("WinHeal v0.3.0 ULTRA")
-root.geometry("500x620")
-root.configure(bg="#0f172a")
+btn4 = ctk.CTkButton(app, text="⚡ Optimize RAM", width=400, height=45, fg_color="#1976D2", hover_color="#0D47A1", font=ctk.CTkFont(size=15, weight="bold"), command=lambda: status.configure(text="RAM Optimized!"))
+btn4.pack(pady=8)
 
-tk.Label(root, text="WinHeal", font=("Segoe UI Bold", 36), bg="#0f172a", fg="#38bdf8").pack(pady=(20,2))
-tk.Label(root, text="v0.3.0 ULTRA - The Healing Continues", font=("Segoe UI", 11), bg="#0f172a", fg="#94a3b8").pack()
+footer = ctk.CTkLabel(app, text="Soyen Hasan | github.com/soyenhasan/WinHeal-AI", font=ctk.CTkFont(size=10), text_color="#666")
+footer.pack(side="bottom", pady=10)
 
-stats_label = tk.Label(root, text="Loading...", font=("Segoe UI", 10), bg="#0f172a", fg="white")
-stats_label.pack(pady=15)
-
-progress = ttk.Progressbar(root, mode='indeterminate', length=350)
-progress.pack(pady=5)
-
-btn_frame = tk.Frame(root, bg="#0f172a")
-btn_frame.pack(pady=20)
-
-def mk_btn(text, color, cmd):
-    return tk.Button(btn_frame, text=text, command=cmd, bg=color, fg="white", font=("Segoe UI Bold", 11), width=28, bd=0, pady=10, cursor="hand2")
-
-mk_btn("🧹 Clean Temp Files", "#22c55e", clean_temp_thread).pack(pady=6)
-mk_btn("🗑️ Clean Recycle Bin (NEW)", "#ef4444", clean_recycle_thread).pack(pady=6)
-mk_btn("🌐 Clean Browser Cache (NEW)", "#f59e0b", clean_browser_thread).pack(pady=6)
-mk_btn("⚡ Optimize RAM", "#3b82f6", clean_ram).pack(pady=6)
-
-status_label = tk.Label(root, text="Ready to heal...", font=("Segoe UI Bold", 11), bg="#0f172a", fg="#22c55e")
-status_label.pack(pady=15)
-
-tk.Label(root, text="Made in Bangladesh 🇧🇩 | Soyen Hasan | github.com/soyenhasan/WinHeal-AI", font=("Segoe UI", 8), bg="#0f172a", fg="#64748b").pack(side="bottom", pady=15)
-
-refresh_stats()
-root.mainloop()
+app.mainloop()
