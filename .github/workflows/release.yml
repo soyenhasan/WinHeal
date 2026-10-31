@@ -1,0 +1,48 @@
+name: Auto Release WinHeal
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Create Release Automatically
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "WinHeal ${{ github.ref_name }} GLOBAL 🌍🇧🇩"
+          body: |
+            # 🚀 WinHeal ${{ github.ref_name }} GLOBAL - WORLD RELEASE!
+
+            **Made in Bangladesh 🇧🇩 - Now Going GLOBAL!**
+
+            ### 🌟 What's New
+            - 🌐 10 LANGUAGES with Live Switcher!
+            - 🏆 Total Cleaned Counter
+            - 🚀 Startup Manager - Make PC Fast
+            - ⚡ REAL RAM Booster
+            - 📁 Large File Finder (>500MB)
+
+            ### 🌐 Languages
+            English, বাংলা, हिन्दी, اردو, العربية, Español, Français, Deutsch, 中文, 日本語
+
+            ### 💻 Download Source Code Below
+
+            ### 👨‍💻 Developer
+            **Soyen Hasan - Made in Bangladesh 🇧🇩**
+            🔗 https://github.com/soyenhasan/WinHeal-AI
+
+            **Please give a ⭐ Star!**
+
+            #MadeInBangladesh #WinHeal
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
