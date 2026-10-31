@@ -5,8 +5,21 @@ import winshell
 from tkinter import messagebox, filedialog
 
 TOTAL_FILE = "total_cleaned.json"
-APP_VERSION = "v0.7.0 LEGEND"
+APP_VERSION = "v0.8.0 GLOBAL"
 GITHUB_REPO = "soyenhasan/WinHeal-AI"
+
+LANGUAGES = {
+    "English": {"title":"WinHeal","subtitle":"v0.8.0 GLOBAL - 10 Languages","total":"Total Cleaned","clean_temp":"🧹 Clean Temp Files","clean_recycle":"🗑️ Clean Recycle Bin - REAL","clean_browser":"🌐 Clean Browser Cache - REAL","startup":"🚀 1. Startup Manager - Make PC Fast","ram_boost":"⚡ 2. RAM Booster - REAL Clean","large_file":"📁 3. Large File Finder (>500MB)","check_update":"🔄 Check for Update","ready":"Ready to heal...","new_features":"--- NEW v0.8.0 GLOBAL FEATURES ---","lang_label":"🌐 Language:"},
+    "বাংলা": {"title":"উইনহিল","subtitle":"v0.8.0 গ্লোবাল - ১০ ভাষা","total":"মোট পরিষ্কার","clean_temp":"🧹 টেম্প ফাইল পরিষ্কার","clean_recycle":"🗑️ রিসাইকেল বিন খালি করুন","clean_browser":"🌐 ব্রাউজার ক্যাশ পরিষ্কার","startup":"🚀 ১. স্টার্টআপ ম্যানেজার","ram_boost":"⚡ ২. র‍্যাম বুস্টার - আসল","large_file":"📁 ৩. বড় ফাইল খুঁজুন","check_update":"🔄 আপডেট চেক","ready":"হিল করার জন্য প্রস্তুত...","new_features":"--- নতুন v0.8.0 গ্লোবাল ফিচার ---","lang_label":"🌐 ভাষা:"},
+    "हिन्दी": {"title":"विनहील","subtitle":"v0.8.0 ग्लोबल - 10 भाषाएँ","total":"कुल साफ","clean_temp":"🧹 टेम्प फाइलें साफ करें","clean_recycle":"🗑️ रीसायकल बिन खाली करें","clean_browser":"🌐 ब्राउज़र कैश साफ करें","startup":"🚀 1. स्टार्टअप मैनेजर","ram_boost":"⚡ 2. रैम बूस्टर - असली","large_file":"📁 3. बड़ी फाइल खोजें","check_update":"🔄 अपडेट चेक","ready":"तैयार...","new_features":"--- नया v0.8.0 ग्लोबल ---","lang_label":"🌐 भाषा:"},
+    "اردو": {"title":"ون ہیل","subtitle":"v0.8.0 گلوبل - 10 زبانیں","total":"کل صاف","clean_temp":"🧹 ٹیمپ صاف کریں","clean_recycle":"🗑️ ری سائیکل بن خالی","clean_browser":"🌐 براؤزر کیش صاف","startup":"🚀 1. اسٹارٹ اپ مینیجر","ram_boost":"⚡ 2. ریم بوسٹر","large_file":"📁 3. بڑی فائل تلاش","check_update":"🔄 اپ ڈیٹ چیک","ready":"تیار...","new_features":"--- نیا v0.8.0 ---","lang_label":"🌐 زبان:"},
+    "العربية": {"title":"وين هيل","subtitle":"v0.8.0 عالمي - 10 لغات","total":"إجمالي التنظيف","clean_temp":"🧹 تنظيف الملفات المؤقتة","clean_recycle":"🗑️ إفراغ سلة المهملات","clean_browser":"🌐 تنظيف ذاكرة المتصفح","startup":"🚀 1. مدير بدء التشغيل","ram_boost":"⚡ 2. معزز الرام","large_file":"📁 3. البحث عن الملفات الكبيرة","check_update":"🔄 تحقق من التحديث","ready":"جاهز...","new_features":"--- ميزات v0.8.0 العالمية ---","lang_label":"🌐 اللغة:"},
+    "Español": {"title":"WinHeal","subtitle":"v0.8.0 GLOBAL - 10 Idiomas","total":"Total Limpiado","clean_temp":"🧹 Limpiar Archivos Temp","clean_recycle":"🗑️ Vaciar Papelera - REAL","clean_browser":"🌐 Limpiar Caché Navegador","startup":"🚀 1. Gestor de Inicio","ram_boost":"⚡ 2. Potenciador RAM","large_file":"📁 3. Buscador Archivos Grandes","check_update":"🔄 Buscar Actualización","ready":"Listo...","new_features":"--- NUEVO v0.8.0 GLOBAL ---","lang_label":"🌐 Idioma:"},
+    "Français": {"title":"WinHeal","subtitle":"v0.8.0 GLOBAL - 10 Langues","total":"Total Nettoyé","clean_temp":"🧹 Nettoyer Fichiers Temp","clean_recycle":"🗑️ Vider Corbeille","clean_browser":"🌐 Nettoyer Cache","startup":"🚀 1. Gestionnaire Démarrage","ram_boost":"⚡ 2. Booster RAM","large_file":"📁 3. Gros Fichiers","check_update":"🔄 Vérifier Mise à Jour","ready":"Prêt...","new_features":"--- NOUVEAU v0.8.0 GLOBAL ---","lang_label":"🌐 Langue:"},
+    "Deutsch": {"title":"WinHeal","subtitle":"v0.8.0 GLOBAL - 10 Sprachen","total":"Bereinigt","clean_temp":"🧹 Temp-Dateien Bereinigen","clean_recycle":"🗑️ Papierkorb Leeren","clean_browser":"🌐 Browser-Cache Bereinigen","startup":"🚀 1. Startup Manager","ram_boost":"⚡ 2. RAM Booster","large_file":"📁 3. Große Dateien Finder","check_update":"🔄 Auf Update Prüfen","ready":"Bereit...","new_features":"--- NEU v0.8.0 GLOBAL ---","lang_label":"🌐 Sprache:"},
+    "中文": {"title":"WinHeal","subtitle":"v0.8.0 全球版 - 10种语言","total":"总共清理","clean_temp":"🧹 清理临时文件","clean_recycle":"🗑️ 清空回收站","clean_browser":"🌐 清理浏览器缓存","startup":"🚀 1. 启动管理器","ram_boost":"⚡ 2. 内存加速器","large_file":"📁 3. 大文件查找器","check_update":"🔄 检查更新","ready":"准备...","new_features":"--- 新功能 v0.8.0 ---","lang_label":"🌐 语言:"},
+    "日本語": {"title":"WinHeal","subtitle":"v0.8.0 グローバル - 10言語","total":"合計クリーン","clean_temp":"🧹 一時ファイルをクリーン","clean_recycle":"🗑️ ごみ箱を空に","clean_browser":"🌐 ブラウザキャッシュ","startup":"🚀 1. スタートアップ管理","ram_boost":"⚡ 2. RAMブースター","large_file":"📁 3. 大きなファイル","check_update":"🔄 アップデート確認","ready":"準備完了...","new_features":"--- 新機能 v0.8.0 ---","lang_label":"🌐 言語:"},
+}
 
 def get_total():
     if os.path.exists(TOTAL_FILE):
@@ -38,32 +51,40 @@ def get_stats():
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 app = ctk.CTk()
-app.geometry("560x820")
+app.geometry("580x880")
 app.title(f"WinHeal {APP_VERSION}")
 try:
     if os.path.exists("icon.ico"): app.iconbitmap("icon.ico")
 except: pass
 
+current_lang_var = ctk.StringVar(value="English")
+
 title = ctk.CTkLabel(app, text="WinHeal", font=ctk.CTkFont(size=55, weight="bold"), text_color="#00D1FF")
-title.pack(pady=(15,2))
+title.pack(pady=(5,2))
+
+lang_frame = ctk.CTkFrame(app, fg_color="transparent")
+lang_frame.pack(pady=2, padx=10, anchor="center")
+lang_label_widget = ctk.CTkLabel(lang_frame, text="🌐 Language:", font=ctk.CTkFont(size=12, weight="bold"))
+lang_label_widget.pack(side="left", padx=5)
+
 subtitle = ctk.CTkLabel(app, text=f"{APP_VERSION} - 1,2,3 NEW ADDED", font=ctk.CTkFont(size=13), text_color="#00FF88")
 subtitle.pack()
 
 total_mb = get_total()
-total_label = ctk.CTkLabel(app, text=f"🏆 Total Cleaned: {total_mb:.1f} MB | Made in Bangladesh 🇧🇩", font=ctk.CTkFont(size=13, weight="bold"), fg_color="#1F6AA5", corner_radius=20, width=480, height=32)
-total_label.pack(pady=12)
+total_label = ctk.CTkLabel(app, text=f"🏆 Total Cleaned: {total_mb:.1f} MB | Made in Bangladesh 🇧🇩", font=ctk.CTkFont(size=13, weight="bold"), fg_color="#1F6AA5", corner_radius=20, width=500, height=32)
+total_label.pack(pady=8)
 
 count, temp_mb, browser_mb, ram = get_stats()
 stats_label = ctk.CTkLabel(app, text=f"Temp: {count} files ({temp_mb:.1f} MB) | Browser: {browser_mb:.1f} MB | RAM: {ram}%", font=ctk.CTkFont(size=12))
-stats_label.pack(pady=5)
+stats_label.pack(pady=3)
 
-progress = ctk.CTkProgressBar(app, width=480, height=15)
-progress.pack(pady=10)
+progress = ctk.CTkProgressBar(app, width=500, height=15)
+progress.pack(pady=8)
 progress.set(0)
 percent_label = ctk.CTkLabel(app, text="0%", font=ctk.CTkFont(size=12, weight="bold"))
 percent_label.pack()
 status = ctk.CTkLabel(app, text="Ready to heal...", font=ctk.CTkFont(size=14, weight="bold"), text_color="#00FF88")
-status.pack(pady=8)
+status.pack(pady=5)
 
 def update_progress(val, text):
     progress.set(val/100)
@@ -86,7 +107,8 @@ def clean_temp():
                     update_progress((i/total)*100 if total>0 else 100, f"Cleaning {i}/{total}...")
                 except: pass
             new_total = save_total(cleaned_mb)
-            total_label.configure(text=f"🏆 Total Cleaned: {new_total:.1f} MB | Made in Bangladesh 🇧🇩")
+            t = LANGUAGES[current_lang_var.get()]["total"]
+            total_label.configure(text=f"🏆 {t}: {new_total:.1f} MB | Made in Bangladesh 🇧🇩")
             update_progress(100, f"✅ Cleaned Temp ({cleaned_mb:.1f} MB)!")
         except Exception as e: update_progress(0, f"Error: {e}")
     threading.Thread(target=task, daemon=True).start()
@@ -97,7 +119,8 @@ def clean_recycle():
             update_progress(30, "Emptying Recycle Bin...")
             winshell.recycle_bin().empty(confirm=False, show_progress=False, sound=False)
             new_total = save_total(5)
-            total_label.configure(text=f"🏆 Total Cleaned: {new_total:.1f} MB | Made in Bangladesh 🇧🇩")
+            t = LANGUAGES[current_lang_var.get()]["total"]
+            total_label.configure(text=f"🏆 {t}: {new_total:.1f} MB | Made in Bangladesh 🇧🇩")
             update_progress(100, "✅ Recycle Bin Emptied!")
         except Exception as e: update_progress(0, f"Error: {e}")
     threading.Thread(target=task, daemon=True).start()
@@ -117,12 +140,12 @@ def clean_browser():
                                 f.unlink()
                         except: pass
             new_total = save_total(total_size)
-            total_label.configure(text=f"🏆 Total Cleaned: {new_total:.1f} MB | Made in Bangladesh 🇧🇩")
+            t = LANGUAGES[current_lang_var.get()]["total"]
+            total_label.configure(text=f"🏆 {t}: {new_total:.1f} MB | Made in Bangladesh 🇧🇩")
             update_progress(100, f"✅ Browser Cleaned ({total_size:.1f} MB)!")
         except Exception as e: update_progress(0, f"Error: {e}")
     threading.Thread(target=task, daemon=True).start()
 
-# --- NEW 1,2,3 ---
 def show_startup_manager():
     win = ctk.CTkToplevel(app)
     win.geometry("650x450")
@@ -160,14 +183,12 @@ def real_ram_booster():
     def task():
         try:
             update_progress(10, "⚡ REAL RAM Cleaning...")
-            cleaned_count = 0
             for proc in psutil.process_iter(['pid']):
                 try:
                     handle = ctypes.windll.kernel32.OpenProcess(0x1F0FFF, False, proc.info['pid'])
                     if handle:
                         ctypes.windll.psapi.EmptyWorkingSet(handle)
                         ctypes.windll.kernel32.CloseHandle(handle)
-                        cleaned_count += 1
                 except: pass
             mem = psutil.virtual_memory()
             update_progress(100, f"✅ RAM Boosted! Available: {mem.available // (1024*1024)} MB")
@@ -212,13 +233,48 @@ def check_update():
         except: update_progress(0, "Update Failed - Offline")
     threading.Thread(target=task, daemon=True).start()
 
-ctk.CTkButton(app, text="🧹 Clean Temp Files", width=480, height=45, fg_color="#00C853", command=clean_temp).pack(pady=6)
-ctk.CTkButton(app, text="🗑️ Clean Recycle Bin - REAL", width=480, height=45, fg_color="#D32F2F", command=clean_recycle).pack(pady=6)
-ctk.CTkButton(app, text="🌐 Clean Browser Cache - REAL", width=480, height=45, fg_color="#EF6C00", command=clean_browser).pack(pady=6)
-ctk.CTkLabel(app, text="--- NEW v0.7.0 LEGEND FEATURES ---", font=ctk.CTkFont(size=12, weight="bold"), text_color="#FFD600").pack(pady=(12,4))
-ctk.CTkButton(app, text="🚀 1. Startup Manager - Make PC Fast", width=480, height=45, fg_color="#7B1FA2", command=show_startup_manager).pack(pady=6)
-ctk.CTkButton(app, text="⚡ 2. RAM Booster - REAL Clean", width=480, height=45, fg_color="#1976D2", command=real_ram_booster).pack(pady=6)
-ctk.CTkButton(app, text="📁 3. Large File Finder (>500MB)", width=480, height=45, fg_color="#00796B", command=find_large_files).pack(pady=6)
-ctk.CTkButton(app, text="🔄 Check for Update", width=480, height=28, fg_color="#333", command=check_update).pack(pady=10)
-ctk.CTkLabel(app, text="Soyen Hasan | github.com/soyenhasan/WinHeal-AI | v0.7.0 LEGEND", font=ctk.CTkFont(size=10), text_color="#666").pack(side="bottom", pady=8)
+btn_temp = ctk.CTkButton(app, text="🧹 Clean Temp Files", width=500, height=45, fg_color="#00C853", command=clean_temp)
+btn_temp.pack(pady=5)
+btn_recycle = ctk.CTkButton(app, text="🗑️ Clean Recycle Bin - REAL", width=500, height=45, fg_color="#D32F2F", command=clean_recycle)
+btn_recycle.pack(pady=5)
+btn_browser = ctk.CTkButton(app, text="🌐 Clean Browser Cache - REAL", width=500, height=45, fg_color="#EF6C00", command=clean_browser)
+btn_browser.pack(pady=5)
+
+label_new = ctk.CTkLabel(app, text="--- NEW v0.8.0 GLOBAL FEATURES ---", font=ctk.CTkFont(size=12, weight="bold"), text_color="#FFD600")
+label_new.pack(pady=(10,4))
+
+btn_startup = ctk.CTkButton(app, text="🚀 1. Startup Manager - Make PC Fast", width=500, height=45, fg_color="#7B1FA2", command=show_startup_manager)
+btn_startup.pack(pady=5)
+btn_ram = ctk.CTkButton(app, text="⚡ 2. RAM Booster - REAL Clean", width=500, height=45, fg_color="#1976D2", command=real_ram_booster)
+btn_ram.pack(pady=5)
+btn_large = ctk.CTkButton(app, text="📁 3. Large File Finder (>500MB)", width=500, height=45, fg_color="#00796B", command=find_large_files)
+btn_large.pack(pady=5)
+
+btn_update = ctk.CTkButton(app, text="🔄 Check for Update", width=500, height=28, fg_color="#333", command=check_update)
+btn_update.pack(pady=10)
+
+footer = ctk.CTkLabel(app, text="Soyen Hasan | github.com/soyenhasan/WinHeal-AI | v0.8.0 GLOBAL", font=ctk.CTkFont(size=10), text_color="#666")
+footer.pack(side="bottom", pady=8)
+
+def change_language(choice):
+    lang = LANGUAGES[choice]
+    title.configure(text=lang["title"])
+    subtitle.configure(text=lang["subtitle"])
+    lang_label_widget.configure(text=lang["lang_label"])
+    btn_temp.configure(text=lang["clean_temp"])
+    btn_recycle.configure(text=lang["clean_recycle"])
+    btn_browser.configure(text=lang["clean_browser"])
+    btn_startup.configure(text=lang["startup"])
+    btn_ram.configure(text=lang["ram_boost"])
+    btn_large.configure(text=lang["large_file"])
+    btn_update.configure(text=lang["check_update"])
+    status.configure(text=lang["ready"])
+    label_new.configure(text=lang["new_features"])
+    total_mb = get_total()
+    total_label.configure(text=f"🏆 {lang['total']}: {total_mb:.1f} MB | Made in Bangladesh 🇧🇩")
+    app.title(f"WinHeal {APP_VERSION} - {choice}")
+
+lang_menu = ctk.CTkOptionMenu(lang_frame, values=list(LANGUAGES.keys()), variable=current_lang_var, command=change_language, width=160, fg_color="#1F6AA5", button_color="#1F6AA5")
+lang_menu.pack(side="left", padx=5)
+
 app.mainloop()
